@@ -5,21 +5,46 @@
        
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     </head>
-    <body>
-        <h1>Books</h1>
-        <div> <button id="showCreateButton" onclick="showCreate()">Create</button></div>
+    <body class="bg-light">
+    <div class="container mt-5">
+        <h1 class="mb-4 text-primary">📘 Book Manager</h1>
+        <div id="showCreateButton" class="mb-4">
+            <button class="btn btn-success" onclick="showCreate()">➕ Add New Book</button>
+        </div>
+        
+        <div id="createUpdateForm" class="card p-4 mb-4" style="display: none;">
+            <h4 class="card-title">
+                <span id="createLabel">Create a Book</span>
+                <span id="updateLabel">Update Book</span>
+            </h4>
+            <input type="hidden" name="id" />
+            <div class="form-group">
+                <label>Title</label>
+                <input type="text" class="form-control" name="title" />
+            </div>
+        <div class="form-group">
+            <label>Author</label>
+            <input type="text" class="form-control" name="author" />
+        </div>
+        <div class="form-group">
+            <label>Price</label>
+            <input type="number" class="form-control" name="price" />
+        </div>
+        <button id="doCreateButton" class="btn btn-primary" onclick="doCreate()">Create</button>
+        <button id="doUpdateButton" class="btn btn-warning" onclick="doUpdate()">Update</button>
+    </div>
+        
         <div>
-            <table class="table" id="bookTable">
-                <tr>
-                        <th>id</th>
-                        <th>Title</th>
-                        <th>
-                            Author
-                        </th>
-                        <th>Price</th>
-                        <th>Update</th>
-                        <th>Delete</th>
-                </tr>
+           <table class="table table-bordered table-striped bg-white" id="bookTable">
+        <thead class="thead-dark">
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Price</th>
+                <th>Update</th>
+                <th>Delete</th>
+            </tr>
                 
             </table>
         </div>
@@ -125,7 +150,7 @@
         form.querySelector('input[name="price"]').value=''
     }
     function getBookFromRow(rowElement){
-        var car ={}
+        var book ={}
         book.id  = rowElement.getAttribute('id')
         book.title = rowElement.cells[1].firstChild.textContent
         book.author = rowElement.cells[2].firstChild.textContent

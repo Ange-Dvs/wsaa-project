@@ -1,6 +1,13 @@
+#mysql = {
+#    'host':"adproject.mysql.#pythonanywhere-services.com",
+#    'user':"adproject",
+#    'password':"wsaaprojectsql",
+#    'database':"adproject$wsaadb"
+#}
+
 mysql = {
-    'host':"adproject.mysql.pythonanywhere-services.com",
-    'user':"adproject",
-    'password':"wsaaprojectsql",
-    'database':"adproject$wsaadb"
+    'host':"localhost",
+    'user':"root",
+    'password':"",
+    'database':"dproject$wsaadb"
 }

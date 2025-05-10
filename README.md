@@ -20,9 +20,9 @@ https://github.com/Ange-Dvs/wsaa-project.git
 6. If the pull has been successful, you should see 6 files pulled from GitHub. The ``readme.md``, the ``.gitignore`` file, the XXX files contained within.
 
 ## Software used
-The software used for the creation of the project  included VS Code, Python, Jupyter notebooks & GitHub. 
+The software used for the creation of the project  included VS Code, Python, Pythonanywhere & GitHub. 
 
-## Walkthrough if the assignments
+## Walkthrough of project
 
 ## Libraries used 
 

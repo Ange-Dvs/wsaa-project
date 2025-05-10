@@ -10,7 +10,7 @@ from bookDAO import bookDAO
 @app.route('/')
 @cross_origin()
 def index():
-    return "Hello, World!"
+    return app.send_static_file('bookviewer.html')
 
 #curl "http://127.0.0.1:5000/books"
 @app.route('/books')

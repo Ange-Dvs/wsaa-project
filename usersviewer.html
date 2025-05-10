@@ -1,0 +1,303 @@
+<html>
+    <head>
+        <title> view Users</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+       
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    </head>
+    <body class="bg-light">
+    <div class="container mt-5">
+        <h1 class="mb-4 text-primary"> 🤼 User Manager</h1>
+        <div id="showCreateButton" class="mb-4">
+            <button class="btn btn-success" onclick="showCreate()">➕ Add New User</button>
+        </div>
+        
+        <div id="createUpdateForm" class="card p-4 mb-4" style="display: none;">
+            <h4 class="card-title">
+                <span id="createLabel">Create a User</span>
+                <span id="updateLabel">Update User</span>
+            </h4>
+            <input type="hidden" name="id" />
+            <div class="form-group">
+                <label>First Name</label>
+                <input type="text" class="form-control" name="firstName" />
+            </div>
+            <div class="form-group">
+                <label>Last Name</label>
+                <input type="text" class="form-control" name="lastName" />
+            </div>
+            <div class="form-group">
+                <label>Age</label>
+                <input type="number" class="form-control" name="age" />
+            </div>
+            <div class="form-group">
+                <label>Goal</label>
+                <input type="text" class="form-control" name="goal" />
+            </div>
+            <div class="form-group">
+                <label>Starting Weight</label>
+                <input type="number" class="form-control" name="startingWeight" step="any" />
+            </div>
+            <div class="form-group">
+                <label>Current Weight</label>
+                <input type="number" class="form-control" name="currentWeight" step="any" />
+            </div>
+        <button id="doCreateButton" class="btn btn-primary" onclick="doCreate()">Create</button>
+        <button id="doUpdateButton" class="btn btn-warning" onclick="doUpdate()">Update</button>
+        </div>
+        
+        <div>
+        <table class="table table-bordered table-striped bg-white" id="userTable">
+            <thead class="thead-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Age</th>
+                    <th>Goal</th>
+                    <th>Starting Weight</th>
+                    <th>Current Weight</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            <!-- Rows will be dynamically inserted here -->
+            </tbody>
+        </table>
+        </div>
+    </body>
+    <script>
+    function showCreate(){
+        document.getElementById('showCreateButton').style.display="none"
+        document.getElementById('userTable').style.display="none"
+        document.getElementById('createUpdateForm').style.display="block"
+
+        document.getElementById('createLabel').style.display="inline"
+        document.getElementById('updateLabel').style.display="none"
+
+        document.getElementById('doCreateButton').style.display="block"
+        document.getElementById('doUpdateButton').style.display="none"
+
+    }
+    function showViewAll(){
+        document.getElementById('showCreateButton').style.display="block"
+        document.getElementById('userTable').style.display="block"
+        document.getElementById('createUpdateForm').style.display="none"
+    }
+    function showUpdate(buttonElement){
+        document.getElementById('showCreateButton').style.display="none"
+        document.getElementById('userTable').style.display="none"
+        document.getElementById('createUpdateForm').style.display="block"
+
+        document.getElementById('createLabel').style.display="none"
+        document.getElementById('updateLabel').style.display="inline"
+
+        document.getElementById('doCreateButton').style.display="none"
+        document.getElementById('doUpdateButton').style.display="block"
+
+
+        var rowElement = buttonElement.parentNode.parentNode
+        // these is a way of finding the closest <tr> which would safer, closest()
+        
+        var user = getUserFromRow(rowElement)
+        populateFormWithUser(user)
+    }
+    function doCreate(){
+        var form = document.getElementById('createUpdateForm')
+
+        var user = {}
+       
+        user.firstName = form.querySelector('input[name="firstName"]').value
+        user.lastName = form.querySelector('input[name="lastName"]').value
+        user.age = form.querySelector('input[name="age"]').value
+        user.goal = form.querySelector('input[name="goal"]').value
+        user.startingWeight = form.querySelector('input[name="startingWeight"]').value
+        user.currentWeight = form.querySelector('input[name="currentWeight"]').value
+
+        console.log(JSON.stringify(user))
+        createUserAjax(user)
+       
+    }
+    function doUpdate(){
+        var user = getUserFromForm();
+        var rowElement = document.getElementById(user.id);
+        updateUserAjax(user);
+        setUserInRow(rowElement,user);
+       
+        clearForm();
+        showViewAll();
+    }
+    function doDelete(r){
+        var tableElement = document.getElementById('userTable');
+        var rowElement = r.parentNode.parentNode;
+        var index = rowElement.rowIndex;
+        deleteUserAjax(rowElement.getAttribute("id"));
+        tableElement.deleteRow(index);
+    }
+    function addUserToTable(user){
+        var tableElement = document.getElementById('userTable')
+        var rowElement = tableElement.insertRow(-1)
+        rowElement.setAttribute('id',user.id)
+        var cell1 = rowElement.insertCell(0);
+        cell1.innerHTML = user.id
+        var cell2 = rowElement.insertCell(1);
+        cell2.innerHTML = user.firstName;
+        var cell3 = rowElement.insertCell(2);
+        cell3.innerHTML = user.lastName;
+        var cell4 = rowElement.insertCell(3);
+        cell4.innerHTML = user.age;
+        var cell5 = rowElement.insertCell(4);
+        cell5.innerHTML = user.goal;
+        var cell6 = rowElement.insertCell(5);
+        cell6.innerHTML = user.startingWeight;
+        var cell7 = rowElement.insertCell(6);
+        cell7.innerHTML = user.currentWeight;
+        var cell8 = rowElement.insertCell(7);
+        cell8.innerHTML = '<button onclick="showUpdate(this)">Update</button>'
+        var cell9 = rowElement.insertCell(8);
+        cell9.innerHTML = '<button onclick=doDelete(this)>Delete</button>'
+    }
+
+    function clearForm(){
+        var form = document.getElementById('createUpdateForm')
+
+        form.querySelector('input[name="firstName"]').value=''
+        form.querySelector('input[name="lastName"]').value=''
+        form.querySelector('input[name="age"]').value=''
+        form.querySelector('input[name="goal"]').value=''
+        form.querySelector('input[name="startingWeight"]').value=''
+        form.querySelector('input[name="currentWeight"]').value=''
+    }
+    function getUserFromRow(rowElement){
+        var user ={}
+        user.id  = rowElement.getAttribute('id')
+        user.firstName = rowElement.cells[1].firstChild.textContent
+        user.lastName = rowElement.cells[2].firstChild.textContent
+        user.age = parseInt(rowElement.cells[3].firstChild.textContent,10)
+        user.goal = rowElement.cells[4].firstChild.textContent
+        user.startingWeight = parseFloat(rowElement.cells[5].firstChild.textContent)
+        user.currentWeight = parseFloat(rowElement.cells[6].firstChild.textContent)
+
+        return user
+    }
+    function setUserInRow(rowElement, user){
+        rowElement.cells[0].firstChild.textContent= user.id  
+        rowElement.cells[1].firstChild.textContent= user.firstName 
+        rowElement.cells[2].firstChild.textContent= user.lastName
+        rowElement.cells[3].firstChild.textContent= user.age
+        rowElement.cells[4].firstChild.textContent= user.goal  
+        rowElement.cells[5].firstChild.textContent= user.startingWeight
+        rowElement.cells[6].firstChild.textContent= user.currentWeight
+    }
+    function populateFormWithUser(user){
+        var form = document.getElementById('createUpdateForm')
+        form.querySelector('input[name="id"]').disabled = true
+
+        form.querySelector('input[name="id"]').value  = user.id  
+        form.querySelector('input[name="firstName"]').value= user.firstName 
+        form.querySelector('input[name="lastName"]').value= user.lastName
+        form.querySelector('input[name="age"]').value= user.age
+        form.querySelector('input[name="goal"]').value  = user.goal  
+        form.querySelector('input[name="startingWeight"]').value= user.startingWeight
+        form.querySelector('input[name="currentWeight"]').value= user.currentWeight
+
+        return user
+    }
+    function getUserFromForm(){
+        var form = document.getElementById('createUpdateForm')
+        var user = {}
+        user.id = form.querySelector('input[name="id"]').value
+        user.firstName = form.querySelector('input[name="firstName"]').value
+        user.lastName = form.querySelector('input[name="lastName"]').value
+        user.age = parseInt(form.querySelector('input[name="age"]').value,10)
+        user.goal = form.querySelector('input[name="goal"]').value  
+        user.startingWeight = parseFloat(form.querySelector('input[name="startingWeight"]').value,10)
+        user.currentWeight = parseFloat(form.querySelector('input[name="currentWeight"]').value,10)      
+        
+        console.log(JSON.stringify(user))
+        return user
+    }
+
+    function getAllAjax(){
+        $.ajax({
+            "url": "/users",
+            "method":"GET",
+            "data":"",
+            "dataType": "JSON",
+            "success":function(result){
+                //console.log(result);
+                for (user of result){
+                    addUserToTable(user);
+                }
+                
+            },
+            "error":function(xhr,status,error){
+                console.log("error: "+status+" msg:"+error);
+            }
+        });
+
+    }
+    function createUserAjax(user){
+        //var book = {"title":"yoto", "author":"momo","price":800}
+        console.log(JSON.stringify(user));
+        $.ajax({
+            "url": "/users",
+            "method":"POST",
+            "data":JSON.stringify(user),
+            "dataType": "JSON",
+            contentType: "application/json; charset=utf-8",
+            "success":function(result){
+                //console.log(result);
+                user.id = result.id
+                addUserToTable(user)
+                clearForm()
+                showViewAll()
+            },
+            "error":function(xhr,status,error){
+                console.log("error: "+status+" msg:"+error);
+            }
+        });
+    }
+    function updateUserAjax(user){
+        //var book = {"title":"yoto", "author":"momo","price":800}
+        console.log(JSON.stringify(user));
+        $.ajax({
+            "url": "/users/"+encodeURI(user.id),
+            "method":"PUT",
+            "data":JSON.stringify(user),
+            "dataType": "JSON",
+            contentType: "application/json; charset=utf-8",
+            "success":function(result){
+               // console.log(result);
+                  
+            },
+            "error":function(xhr,status,error){
+                console.log("error: "+status+" msg:"+error);
+            }
+        });
+    }
+    function deleteUserAjax(id){
+        
+        //console.log(JSON.stringify('deleting '+id));
+        $.ajax({
+            "url": "/users/"+encodeURI(id),
+            "method":"DELETE",
+            "data":"",
+            "dataType": "JSON",
+            contentType: "application/json; charset=utf-8",
+            "success":function(result){
+                //console.log(result);
+                  
+            },
+            "error":function(xhr,status,error){
+                console.log("error: "+status+" msg:"+error);
+            }
+        });
+    }
+    getAllAjax();
+  
+
+    
+    </script>
+</html>

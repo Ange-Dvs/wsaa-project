@@ -1,6 +1,6 @@
 mysql = {
-    'host':"localhost",
-    'user':"root",
+    'host':"adproject.mysql.pythonanywhere-services.com",
+    'user':"adproject",
     'password':"wsaaprojectsql",
     'database':"wssaproject"
 }

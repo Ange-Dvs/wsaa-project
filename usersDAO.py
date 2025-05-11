@@ -46,10 +46,10 @@ class UsersDAO:
         self.closeAll()
         return returnArray
 
-    def findByID(self, id):
+    def findByID(self, userID):
         cursor = self.getcursor()
-        sql="select * from users where id = %s"
-        values = (id,)
+        sql="select * from users where userID = %s"
+        values = (userID,)
 
         cursor.execute(sql, values)
         result = cursor.fetchone()
@@ -65,24 +65,24 @@ class UsersDAO:
 
         self.connection.commit()
         newid = cursor.lastrowid
-        user["id"] = newid
+        user["userID"] = newid
         self.closeAll()
         return user
 
 
-    def update(self, id, user):
+    def update(self, userID, user):
         cursor = self.getcursor()
-        sql="update users set firstName= %s,lastName=%s, age=%s, goal=%s, startingWeight=%s, currentWeight=%s  where id = %s"
+        sql="update users set firstName= %s,lastName=%s, age=%s, goal=%s, startingWeight=%s, currentWeight=%s  where userID = %s"
         print(f"update users {user}")
-        values = (user.get("firstName"), user.get("lastName"), user.get("age"), user.get("goal"), user.get("startingWeight"), user.get("currentWeight"), id)
+        values = (user.get("firstName"), user.get("lastName"), user.get("age"), user.get("goal"), user.get("startingWeight"), user.get("currentWeight"), userID)
         cursor.execute(sql, values)
         self.connection.commit()
         self.closeAll()
         
-    def delete(self, id):
+    def delete(self, userID):
         cursor = self.getcursor()
         sql="delete from users where userID = %s"
-        values = (id,)
+        values = (userID,)
 
         cursor.execute(sql, values)
 
@@ -92,7 +92,7 @@ class UsersDAO:
         print("delete done")
 
     def convertToDictionary(self, resultLine):
-        attkeys=['id','firstName','lastName', 'age', 'goal', 'startingWeight', 'currentWeight']
+        attkeys=['userID','firstName','lastName', 'age', 'goal', 'startingWeight', 'currentWeight']
         user = {}
         currentkey = 0
         for attrib in resultLine:

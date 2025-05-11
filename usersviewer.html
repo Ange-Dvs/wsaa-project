@@ -17,7 +17,7 @@
                 <span id="createLabel">Create a User</span>
                 <span id="updateLabel">Update User</span>
             </h4>
-            <input type="hidden" name="id" />
+            <input type="hidden" name="userID" />
             <div class="form-group">
                 <label>First Name</label>
                 <input type="text" class="form-control" name="firstName" />
@@ -121,7 +121,7 @@
     }
     function doUpdate(){
         var user = getUserFromForm();
-        var rowElement = document.getElementById(user.id);
+        var rowElement = document.getElementById(user.userID);
         updateUserAjax(user);
         setUserInRow(rowElement,user);
        
@@ -138,9 +138,9 @@
     function addUserToTable(user){
         var tableElement = document.getElementById('userTable')
         var rowElement = tableElement.insertRow(-1)
-        rowElement.setAttribute('id',user.id)
+        rowElement.setAttribute("id", user.userID)
         var cell1 = rowElement.insertCell(0);
-        cell1.innerHTML = user.id
+        cell1.innerHTML = user.userID
         var cell2 = rowElement.insertCell(1);
         cell2.innerHTML = user.firstName;
         var cell3 = rowElement.insertCell(2);
@@ -171,7 +171,7 @@
     }
     function getUserFromRow(rowElement){
         var user ={}
-        user.id  = rowElement.getAttribute('id')
+        user.userID  = rowElement.getAttribute("id")
         user.firstName = rowElement.cells[1].firstChild.textContent
         user.lastName = rowElement.cells[2].firstChild.textContent
         user.age = parseInt(rowElement.cells[3].firstChild.textContent,10)
@@ -182,7 +182,7 @@
         return user
     }
     function setUserInRow(rowElement, user){
-        rowElement.cells[0].firstChild.textContent= user.id  
+        rowElement.cells[0].firstChild.textContent= user.userID  
         rowElement.cells[1].firstChild.textContent= user.firstName 
         rowElement.cells[2].firstChild.textContent= user.lastName
         rowElement.cells[3].firstChild.textContent= user.age
@@ -192,9 +192,9 @@
     }
     function populateFormWithUser(user){
         var form = document.getElementById('createUpdateForm')
-        form.querySelector('input[name="id"]').disabled = true
+        form.querySelector('input[name="userID"]').disabled = true
 
-        form.querySelector('input[name="id"]').value  = user.id  
+        form.querySelector('input[name="userID"]').value  = user.userID  
         form.querySelector('input[name="firstName"]').value= user.firstName 
         form.querySelector('input[name="lastName"]').value= user.lastName
         form.querySelector('input[name="age"]').value= user.age
@@ -207,7 +207,7 @@
     function getUserFromForm(){
         var form = document.getElementById('createUpdateForm')
         var user = {}
-        user.id = form.querySelector('input[name="id"]').value
+        user.userID = form.querySelector('input[name="userID"]').value
         user.firstName = form.querySelector('input[name="firstName"]').value
         user.lastName = form.querySelector('input[name="lastName"]').value
         user.age = parseInt(form.querySelector('input[name="age"]').value,10)
@@ -221,7 +221,7 @@
 
     function getAllAjax(){
         $.ajax({
-            "url": "/users",
+            "url": "/api/users",
             "method":"GET",
             "data":"",
             "dataType": "JSON",
@@ -249,7 +249,7 @@
             contentType: "application/json; charset=utf-8",
             "success":function(result){
                 //console.log(result);
-                user.id = result.id
+                user.userID = result.userID
                 addUserToTable(user)
                 clearForm()
                 showViewAll()
@@ -263,7 +263,7 @@
         //var book = {"title":"yoto", "author":"momo","price":800}
         console.log(JSON.stringify(user));
         $.ajax({
-            "url": "/users/"+encodeURI(user.id),
+            "url": "/users/"+encodeURI(user.userID),
             "method":"PUT",
             "data":JSON.stringify(user),
             "dataType": "JSON",
@@ -277,11 +277,11 @@
             }
         });
     }
-    function deleteUserAjax(id){
+    function deleteUserAjax(userID){
         
         //console.log(JSON.stringify('deleting '+id));
         $.ajax({
-            "url": "/users/"+encodeURI(id),
+            "url": "/users/"+encodeURI(userID),
             "method":"DELETE",
             "data":"",
             "dataType": "JSON",

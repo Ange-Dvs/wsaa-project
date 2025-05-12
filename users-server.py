@@ -6,6 +6,7 @@ cors = CORS(app) # allow CORS for all domains on all routes.
 app.config['CORS_HEADERS'] = 'Content-Type'
 
 from usersDAO import usersDAO
+from workoutsDAO import workoutsDAO 
 
 @app.route('/')
 def home():
@@ -24,9 +25,9 @@ def workouts():
 #curl "http://127.0.0.1:5000/users"
 @app.route('/api/users')
 @cross_origin()
-def getAll():
+def getAllUsers():
     #print("in getall")
-    results = usersDAO.getAll()
+    results = usersDAO.getAllUsers()
     return jsonify(results)
 
 #curl "http://127.0.0.1:5000/users/2"
@@ -39,7 +40,7 @@ def findById(userID):
 #curl  -i -H "Content-Type:application/json" -X POST -d "#{\"title\":\"hello\",\"author\":\"someone\","price\":123}" http://127.#0.0.1:5000/users
 @app.route('/users', methods=['POST'])
 @cross_origin()
-def create():
+def createUser():
     
     if not request.json:
         abort(400)
@@ -52,7 +53,7 @@ def create():
         "startingWeight": request.json['startingWeight'],
         "currentWeight": request.json['currentWeight'],
     }
-    addeduser = usersDAO.create(user)
+    addeduser = usersDAO.createUser(user)
     
     return jsonify(addeduser)
 
@@ -103,6 +104,68 @@ def delete(userID):
     except Exception as e:
         print("Error deleting user:", e)
         return jsonify({"error": str(e)}), 500
+
+@app.route('/api/workouts', methods=['GET'])
+@cross_origin()
+def getAllWorkouts():
+    results = workoutsDAO.getAllWorkouts()
+    return jsonify(results)
+
+@app.route('/api/workouts/<int:workoutID>', methods=['GET'])
+@cross_origin()
+def getWorkoutByID(workoutID):
+    workout = workoutsDAO.findWorkoutByID(workoutID)
+    return jsonify(workout)
+
+@app.route('/api/workouts', methods=['POST'])
+@cross_origin()
+def createWorkout():
+    if not request.json:
+        abort(400)
+
+    workout = {
+        "userID": request.json["userID"],
+        "sessionType": request.json["sessionType"],
+        "location": request.json["location"],
+        "durationMinutes": request.json["durationMinutes"],
+        "difficulty": request.json["difficulty"],
+        "rating": request.json["rating"]
+    }
+
+    addedWorkout = workoutsDAO.createWorkout(workout)
+    return jsonify(addedWorkout), 201
+
+@app.route('/api/workouts/<int:workoutID>', methods=['PUT'])
+@cross_origin()
+def updateWorkout(workoutID):
+    existingWorkout = workoutsDAO.findWorkoutByID(workoutID)
+    if not existingWorkout:
+        abort(404)
+    
+    if not request.json:
+        abort(400)
+    
+    reqJson = request.json
+    if 'rating' in reqJson and not (1 <= int(reqJson['rating']) <= 5):
+        abort(400, description="Rating must be between 1 and 5")
+
+    for field in ['userID', 'sessionType', 'location', 'durationMinutes', 'difficulty', 'rating']:
+        if field in reqJson:
+            existingWorkout[field] = reqJson[field]
+    
+    workoutsDAO.updateWorkout(workoutID, existingWorkout)
+    return jsonify(existingWorkout)
+
+@app.route('/api/workouts/<int:workoutID>', methods=['DELETE'])
+@cross_origin()
+def deleteWorkout(workoutID):
+    try:
+        workoutsDAO.deleteWorkout(workoutID)
+        return jsonify({"done": True})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
 
 if __name__ == '__main__' :
     app.run(debug= True)

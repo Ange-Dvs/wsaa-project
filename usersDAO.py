@@ -32,7 +32,7 @@ class UsersDAO:
         self.connection.close()
         self.cursor.close()
          
-    def getAll(self):
+    def getAllUsers(self):
         cursor = self.getcursor()
         sql="select * from users"
         cursor.execute(sql)
@@ -57,7 +57,7 @@ class UsersDAO:
         self.closeAll()
         return returnvalue
 
-    def create(self, user):
+    def createUser(self, user):
         cursor = self.getcursor()
         sql="insert into users (firstName, lastName, age, goal, startingWeight, currentWeight) values (%s,%s,%s,%s,%s,%s)"
         values = (user.get("firstName"), user.get("lastName"), user.get("age"), user.get("goal"), user.get("startingWeight"), user.get("currentWeight"))

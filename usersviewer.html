@@ -22,6 +22,8 @@
                 top: 0;
                 z-index: 2;
                 white-space: nowrap;
+                padding-left: 8px;
+                padding-right: 0px;
             }
 
             #userTable th,
@@ -178,22 +180,28 @@
         rowElement.setAttribute("id", user.userID);
         var cell1 = rowElement.insertCell(0);
         cell1.innerHTML = user.userID;
+        cell1.classList.add("text-center");
         var cell2 = rowElement.insertCell(1);
         cell2.innerHTML = user.firstName;
         var cell3 = rowElement.insertCell(2);
         cell3.innerHTML = user.lastName;
         var cell4 = rowElement.insertCell(3);
         cell4.innerHTML = user.age;
+        cell4.classList.add("text-center");
         var cell5 = rowElement.insertCell(4);
         cell5.innerHTML = user.goal;
         var cell6 = rowElement.insertCell(5);
         cell6.innerHTML = user.startingBodyWeight;
+        cell6.classList.add("text-center");
         var cell7 = rowElement.insertCell(6);
         cell7.innerHTML = user.currentBodyWeight;
+        cell7.classList.add("text-center");
         var cell8 = rowElement.insertCell(7);
         cell8.innerHTML = '<button class="btn btn-warning btn-sm" onclick="showUpdate(this)">Update</button>';
+        cell8.classList.add("text-center");
         var cell9 = rowElement.insertCell(8);
         cell9.innerHTML = '<button class="btn btn-danger btn-sm" onclick="doDelete(this)">Delete</button>';
+        cell9.classList.add("text-center");
 
     }
 

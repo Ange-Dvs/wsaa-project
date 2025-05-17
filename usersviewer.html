@@ -4,9 +4,15 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
        
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
     </head>
     <body class="bg-light">
     <div class="container mt-5">
+    <label for="nameFilter">Search by Surname:</label>
+    <input type="text" id="nameFilter" placeholder="e.g. O'Brien" onkeyup="filterByLastName()">
+    <p id="nameNotFoundWarning" style="color: red; display: none;">No users found for that surname.</p>
+
+    
     <div class="mb-3">
         <a href="/" class="btn btn-secondary">⬅️ Back to Home</a>
     </div>
@@ -52,31 +58,33 @@
         <button id="doUpdateButton" class="btn btn-warning" onclick="doUpdate()">Update</button>
         </div>
         
-        <div>
-        <table class="table table-bordered table-striped bg-white" id="userTable">
+        <div class="mx-auto" style="max-width: 100%;">
+        <div style="overflow-x: auto; max-width: 1100px; margin: auto;">
+            <table class="table table-bordered table-striped bg-white" id="userTable" style="min-width: 100%;">
             <thead class="thead-dark">
-                <tr>
-                    <th>ID</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Age</th>
-                    <th>Goal</th>
-                    <th>Starting Weight</th>
-                    <th>Current Weight</th>
-                    <th></th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-            <!-- Rows will be dynamically inserted here -->
-            </tbody>
-        </table>
+                        <tr>
+                            <th>ID</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Age</th>
+                            <th>Goal</th>
+                            <th>Starting Weight</th>
+                            <th>Current Weight</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <!-- Rows will be dynamically inserted here -->
+                    </tbody>
+                </table>
+            </div>
         </div>
     </body>
     <script>
     function showCreate(){
         document.getElementById('showCreateButton').style.display="none"
-        document.getElementById('userTable').style.display="none"
+        document.getElementById('userTable').style.display="table"
         document.getElementById('createUpdateForm').style.display="block"
 
         document.getElementById('createLabel').style.display="inline"
@@ -88,12 +96,12 @@
     }
     function showViewAll(){
         document.getElementById('showCreateButton').style.display="block"
-        document.getElementById('userTable').style.display="block"
+        document.getElementById('userTable').style.display="table"
         document.getElementById('createUpdateForm').style.display="none"
     }
     function showUpdate(buttonElement){
         document.getElementById('showCreateButton').style.display="none"
-        document.getElementById('userTable').style.display="none"
+        document.getElementById('userTable').style.display="table"
         document.getElementById('createUpdateForm').style.display="block"
 
         document.getElementById('createLabel').style.display="none"
@@ -142,11 +150,11 @@
         tableElement.deleteRow(index);
     }
     function addUserToTable(user){
-        var tableElement = document.getElementById('userTable')
-        var rowElement = tableElement.insertRow(-1)
-        rowElement.setAttribute("id", user.userID)
+        var tableElement = document.getElementById('userTable').getElementsByTagName('tbody')[0];
+        var rowElement = tableElement.insertRow(-1);
+        rowElement.setAttribute("id", user.userID);
         var cell1 = rowElement.insertCell(0);
-        cell1.innerHTML = user.userID
+        cell1.innerHTML = user.userID;
         var cell2 = rowElement.insertCell(1);
         cell2.innerHTML = user.firstName;
         var cell3 = rowElement.insertCell(2);
@@ -160,9 +168,10 @@
         var cell7 = rowElement.insertCell(6);
         cell7.innerHTML = user.currentBodyWeight;
         var cell8 = rowElement.insertCell(7);
-        cell8.innerHTML = '<button onclick="showUpdate(this)">Update</button>'
+        cell8.innerHTML = '<button class="btn btn-warning btn-sm" onclick="showUpdate(this)">Update</button>';
         var cell9 = rowElement.insertCell(8);
-        cell9.innerHTML = '<button onclick=doDelete(this)>Delete</button>'
+        cell9.innerHTML = '<button class="btn btn-danger btn-sm" onclick="doDelete(this)">Delete</button>';
+
     }
 
     function clearForm(){
@@ -245,7 +254,6 @@
 
     }
     function createUserAjax(user){
-        //var book = {"title":"yoto", "author":"momo","price":800}
         console.log(JSON.stringify(user));
         $.ajax({
             "url": "/users",
@@ -266,7 +274,6 @@
         });
     }
     function updateUserAjax(user){
-        //var book = {"title":"yoto", "author":"momo","price":800}
         console.log(JSON.stringify(user));
         $.ajax({
             "url": "/users/"+encodeURI(user.userID),
@@ -284,8 +291,6 @@
         });
     }
     function deleteUserAjax(userID){
-        
-        //console.log(JSON.stringify('deleting '+id));
         $.ajax({
             "url": "/users/"+encodeURI(userID),
             "method":"DELETE",
@@ -301,6 +306,34 @@
             }
         });
     }
+
+        function filterByLastName() {
+        const input = document.getElementById("nameFilter").value.trim().toLowerCase();
+        const warningNotFound = document.getElementById("nameNotFoundWarning");
+        const table = document.getElementById("userTable");
+        const tbody = table.getElementsByTagName("tbody")[0];
+        const rows = table.getElementsByTagName("tr");
+
+        warningNotFound.style.display = "none";
+
+        // ✅ Filter rows
+        let foundMatch = false;
+        for (let i = 1; i < rows.length; i++) {
+            const lastNameCell  = rows[i].getElementsByTagName("td")[2]; // User ID column
+            if (lastNameCell ) {
+                const txtValue = lastNameCell .textContent || lastNameCell .innerText;
+                const showRow = (input === "" || txtValue.trim().toLowerCase().includes(input));
+                rows[i].style.display = showRow ? "" : "none";
+                if (showRow) foundMatch = true;
+            }
+        }
+
+        // ✅ Show "not found" warning if no match
+        if (input !== "" && !foundMatch) {
+            warningNotFound.style.display = "block";
+        }
+    }
+
     getAllAjax();
       
     </script>

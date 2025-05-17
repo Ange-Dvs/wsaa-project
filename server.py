@@ -5,8 +5,8 @@ app = Flask(__name__, static_url_path='', static_folder='.')
 cors = CORS(app) # allow CORS for all domains on all routes.
 app.config['CORS_HEADERS'] = 'Content-Type'
 
-from usersDAO import usersDAO
-from workoutsDAO import workoutsDAO 
+from dao.usersDAO import usersDAO
+from dao.workoutsDAO import workoutsDAO 
 
 @app.route('/')
 def home():

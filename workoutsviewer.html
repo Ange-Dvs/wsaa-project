@@ -58,8 +58,9 @@
         <button id="doUpdateButton" class="btn btn-warning" onclick="doUpdateWorkout()">Update</button>
         </div>
         
-        <div>
-        <table class="table table-bordered table-striped bg-white" id="workoutTable">
+        <div class="mx-auto" style="max-width: 100%;">
+        <div style="overflow-x: auto; max-width: 1100px; margin: auto;">
+            <table class="table table-bordered table-striped bg-white" id="workoutTable" style="min-width: 100%;">
             <thead class="thead-dark">
                 <tr>
                     <th>Workout ID</th>
@@ -78,11 +79,12 @@
             </tbody>
         </table>
         </div>
+        </div>
     </body>
     <script>
     function showCreate(){
         document.getElementById('showCreateButton').style.display="none"
-        document.getElementById('workoutTable').style.display="none"
+        document.getElementById('workoutTable').style.display="table"
         document.getElementById('createUpdateForm').style.display="block"
 
         document.getElementById('createLabel').style.display="inline"
@@ -94,12 +96,12 @@
     }
     function showViewAll(){
         document.getElementById('showCreateButton').style.display="block"
-        document.getElementById('workoutTable').style.display="block"
+        document.getElementById('workoutTable').style.display="table"
         document.getElementById('createUpdateForm').style.display="none"
     }
     function showUpdate(buttonElement){
         document.getElementById('showCreateButton').style.display="none"
-        document.getElementById('workoutTable').style.display="none"
+        document.getElementById('workoutTable').style.display="table"
         document.getElementById('createUpdateForm').style.display="block"
 
         document.getElementById('createLabel').style.display="none"
@@ -149,8 +151,8 @@
     }
     function addWorkoutToTable(workout){
         var tableElement = document.getElementById('workoutTable').getElementsByTagName('tbody')[0];
-        var rowElement = tableElement.insertRow(-1)
-        rowElement.setAttribute("id", workout.workoutID)
+        var rowElement = tableElement.insertRow(-1);
+        rowElement.setAttribute("id", workout.workoutID);
         var cell1 = rowElement.insertCell(0);
         cell1.innerHTML = workout.workoutID
         var cell2 = rowElement.insertCell(1);
@@ -252,7 +254,6 @@
 
     }
     function createWorkoutsAjax(workout){
-        //var book = {"title":"yoto", "author":"momo","price":800}
         console.log(JSON.stringify(workout));
         $.ajax({
             "url": "/api/workouts",
@@ -273,7 +274,6 @@
         });
     }
     function updateWorkoutAjax(workout){
-        //var book = {"title":"yoto", "author":"momo","price":800}
         console.log(JSON.stringify(workout));
         $.ajax({
             "url": "/api/workouts/"+encodeURI(workout.workoutID),
@@ -291,8 +291,6 @@
         });
     }
     function deleteWorkoutAjax(workoutID){
-        
-        //console.log(JSON.stringify('deleting '+id));
         $.ajax({
             "url": "/api/workouts/"+encodeURI(workoutID),
             "method":"DELETE",

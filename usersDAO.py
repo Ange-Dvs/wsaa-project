@@ -59,8 +59,8 @@ class UsersDAO:
 
     def createUser(self, user):
         cursor = self.getcursor()
-        sql="insert into users (firstName, lastName, age, goal, startingWeight, currentWeight) values (%s,%s,%s,%s,%s,%s)"
-        values = (user.get("firstName"), user.get("lastName"), user.get("age"), user.get("goal"), user.get("startingWeight"), user.get("currentWeight"))
+        sql="insert into users (firstName, lastName, age, goal, startingBodyWeight, currentBodyWeight) values (%s,%s,%s,%s,%s,%s)"
+        values = (user.get("firstName"), user.get("lastName"), user.get("age"), user.get("goal"), user.get("startingBodyWeight"), user.get("currentBodyWeight"))
         cursor.execute(sql, values)
 
         self.connection.commit()
@@ -72,9 +72,9 @@ class UsersDAO:
 
     def update(self, userID, user):
         cursor = self.getcursor()
-        sql="update users set firstName= %s,lastName=%s, age=%s, goal=%s, startingWeight=%s, currentWeight=%s  where userID = %s"
+        sql="update users set firstName= %s,lastName=%s, age=%s, goal=%s, startingBodyWeight=%s, currentBodyWeight=%s  where userID = %s"
         print(f"update users {user}")
-        values = (user.get("firstName"), user.get("lastName"), user.get("age"), user.get("goal"), user.get("startingWeight"), user.get("currentWeight"), userID)
+        values = (user.get("firstName"), user.get("lastName"), user.get("age"), user.get("goal"), user.get("startingBodyWeight"), user.get("currentBodyWeight"), userID)
         cursor.execute(sql, values)
         self.connection.commit()
         self.closeAll()
@@ -92,7 +92,7 @@ class UsersDAO:
         print("delete done")
 
     def convertToDictionary(self, resultLine):
-        attkeys=['userID','firstName','lastName', 'age', 'goal', 'startingWeight', 'currentWeight']
+        attkeys=['userID','firstName','lastName', 'age', 'goal', 'startingBodyWeight', 'currentBodyWeight']
         user = {}
         currentkey = 0
         for attrib in resultLine:

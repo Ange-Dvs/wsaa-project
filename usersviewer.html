@@ -41,12 +41,12 @@
                 <input type="text" class="form-control" name="goal" />
             </div>
             <div class="form-group">
-                <label>Starting Weight</label>
-                <input type="number" class="form-control" name="startingWeight" step="any" />
+                <label>Starting Body Weight</label>
+                <input type="number" class="form-control" name="startingBodyWeight" step="any" />
             </div>
             <div class="form-group">
-                <label>Current Weight</label>
-                <input type="number" class="form-control" name="currentWeight" step="any" />
+                <label>Current Body Weight</label>
+                <input type="number" class="form-control" name="currentBodyWeight" step="any" />
             </div>
         <button id="doCreateButton" class="btn btn-primary" onclick="doCreate()">Create</button>
         <button id="doUpdateButton" class="btn btn-warning" onclick="doUpdate()">Update</button>
@@ -118,8 +118,8 @@
         user.lastName = form.querySelector('input[name="lastName"]').value
         user.age = form.querySelector('input[name="age"]').value
         user.goal = form.querySelector('input[name="goal"]').value
-        user.startingWeight = form.querySelector('input[name="startingWeight"]').value
-        user.currentWeight = form.querySelector('input[name="currentWeight"]').value
+        user.startingBodyWeight = form.querySelector('input[name="startingBodyWeight"]').value
+        user.currentBodyWeight = form.querySelector('input[name="currentBodyWeight"]').value
 
         console.log(JSON.stringify(user))
         createUserAjax(user)
@@ -156,9 +156,9 @@
         var cell5 = rowElement.insertCell(4);
         cell5.innerHTML = user.goal;
         var cell6 = rowElement.insertCell(5);
-        cell6.innerHTML = user.startingWeight;
+        cell6.innerHTML = user.startingBodyWeight;
         var cell7 = rowElement.insertCell(6);
-        cell7.innerHTML = user.currentWeight;
+        cell7.innerHTML = user.currentBodyWeight;
         var cell8 = rowElement.insertCell(7);
         cell8.innerHTML = '<button onclick="showUpdate(this)">Update</button>'
         var cell9 = rowElement.insertCell(8);
@@ -172,8 +172,8 @@
         form.querySelector('input[name="lastName"]').value=''
         form.querySelector('input[name="age"]').value=''
         form.querySelector('input[name="goal"]').value=''
-        form.querySelector('input[name="startingWeight"]').value=''
-        form.querySelector('input[name="currentWeight"]').value=''
+        form.querySelector('input[name="startingBodyWeight"]').value=''
+        form.querySelector('input[name="currentBodyWeight"]').value=''
     }
     function getUserFromRow(rowElement){
         var user ={}
@@ -182,8 +182,8 @@
         user.lastName = rowElement.cells[2].firstChild.textContent
         user.age = parseInt(rowElement.cells[3].firstChild.textContent,10)
         user.goal = rowElement.cells[4].firstChild.textContent
-        user.startingWeight = parseFloat(rowElement.cells[5].firstChild.textContent)
-        user.currentWeight = parseFloat(rowElement.cells[6].firstChild.textContent)
+        user.startingBodyWeight = parseFloat(rowElement.cells[5].firstChild.textContent)
+        user.currentBodyWeight = parseFloat(rowElement.cells[6].firstChild.textContent)
 
         return user
     }
@@ -193,8 +193,8 @@
         rowElement.cells[2].firstChild.textContent= user.lastName
         rowElement.cells[3].firstChild.textContent= user.age
         rowElement.cells[4].firstChild.textContent= user.goal  
-        rowElement.cells[5].firstChild.textContent= user.startingWeight
-        rowElement.cells[6].firstChild.textContent= user.currentWeight
+        rowElement.cells[5].firstChild.textContent= user.startingBodyWeight
+        rowElement.cells[6].firstChild.textContent= user.currentBodyWeight
     }
     function populateFormWithUser(user){
         var form = document.getElementById('createUpdateForm')
@@ -205,8 +205,8 @@
         form.querySelector('input[name="lastName"]').value= user.lastName
         form.querySelector('input[name="age"]').value= user.age
         form.querySelector('input[name="goal"]').value  = user.goal  
-        form.querySelector('input[name="startingWeight"]').value= user.startingWeight
-        form.querySelector('input[name="currentWeight"]').value= user.currentWeight
+        form.querySelector('input[name="startingBodyWeight"]').value= user.startingBodyWeight
+        form.querySelector('input[name="currentBodyWeight"]').value= user.currentBodyWeight
 
         return user
     }
@@ -218,8 +218,8 @@
         user.lastName = form.querySelector('input[name="lastName"]').value
         user.age = parseInt(form.querySelector('input[name="age"]').value,10)
         user.goal = form.querySelector('input[name="goal"]').value  
-        user.startingWeight = parseFloat(form.querySelector('input[name="startingWeight"]').value,10)
-        user.currentWeight = parseFloat(form.querySelector('input[name="currentWeight"]').value,10)      
+        user.startingBodyWeight = parseFloat(form.querySelector('input[name="startingBodyWeight"]').value,10)
+        user.currentBodyWeight = parseFloat(form.querySelector('input[name="currentBodyWeight"]').value,10)      
         
         console.log(JSON.stringify(user))
         return user

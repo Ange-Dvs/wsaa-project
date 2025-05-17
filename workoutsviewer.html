@@ -7,6 +7,12 @@
     </head>
     <body class="bg-light">
     <div class="container mt-5">
+    <label for="userFilter">Search by User ID:</label>
+    <input type="text" id="userFilter" placeholder="e.g. 123" onkeyup="filterByUser()">
+    <p id="userFilterWarning" style="color: red; display: none;">Please enter a valid number for the User ID.</p>
+    <p id="userNotFoundWarning" style="color: red; display: none;">No workouts found for that User ID.</p>
+
+
     <div class="mb-3">
         <a href="/" class="btn btn-secondary">⬅️ Back to Home</a>
     </div>
@@ -302,6 +308,45 @@
             }
         });
     }
+    function filterByUser() {
+        const input = document.getElementById("userFilter").value.trim();
+        const warningInvalid = document.getElementById("userFilterWarning");
+        const warningNotFound = document.getElementById("userNotFoundWarning");
+        const table = document.getElementById("workoutTable");
+        const rows = table.getElementsByTagName("tr");
+
+        warningInvalid.style.display = "none";
+        warningNotFound.style.display = "none";
+
+        // ✅ Validate integer
+        if (input !== "" && !/^\d+$/.test(input)) {
+            warningInvalid.style.display = "block";
+            // Optionally hide rows on invalid input
+            for (let i = 1; i < rows.length; i++) {
+                rows[i].style.display = "none";
+            }
+            return;
+        }
+
+        // ✅ Filter rows
+        let foundMatch = false;
+        for (let i = 1; i < rows.length; i++) {
+            const userCell = rows[i].getElementsByTagName("td")[1]; // User ID column
+            if (userCell) {
+                const txtValue = userCell.textContent || userCell.innerText;
+                const showRow = (input === "" || txtValue.trim() === input);
+                rows[i].style.display = showRow ? "" : "none";
+                if (showRow) foundMatch = true;
+            }
+        }
+
+        // ✅ Show "not found" warning if no match
+        if (input !== "" && !foundMatch) {
+            warningNotFound.style.display = "block";
+        }
+    }
+
+
     getAllAjax();    
     </script>
 </html>

@@ -13,6 +13,7 @@
         <div class="d-flex flex-column align-items-center mt-4">
             <a href="/users" class="btn btn-outline-primary btn-lg mb-3">👤 User Management</a>
             <a href="/workouts" class="btn btn-outline-success btn-lg">📋 Workout Logs</a>
+            <a href="/weight-management" class="btn btn-outline-warning btn-lg mt-3">⚖️ Weight Management</a>
         </div>
     </div>
     <div class="container mt-5 px-1">
@@ -40,7 +41,6 @@
             <ul id="userStats" class="mb-0 ps-2 list-unstyled text-start">
             <li>Total Users: <span id="totalUsers"></span></li>
             <li>Avg Age: <span id="avgAge"></span></li>
-            <li>Avg Weight Change (for weight loss users): <span id="avgWeightLoss"></span> kg</li>
             <li>Top Goals:
                 <ol id="topGoals" class="mb-0 ps-3"></ol>
             </li>
@@ -73,7 +73,6 @@
         .then(data => {
             document.getElementById("totalUsers").innerText = data.total_users;
             document.getElementById("avgAge").innerText = data.avg_age;
-            document.getElementById("avgWeightLoss").innerText = data.avg_weight_change_loss;
 
             const goalList = document.getElementById("topGoals");
             goalList.innerHTML = ""; // clear any previous entries

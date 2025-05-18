@@ -4,6 +4,8 @@
 
 import mysql.connector
 import dbconfig as cfg
+import datetime
+
 class WorkoutsDAO:
     connection=""
     cursor =''
@@ -34,7 +36,7 @@ class WorkoutsDAO:
          
     def getAllWorkouts(self):
         cursor = self.getcursor()
-        sql="select * from workouts"
+        sql="select * from workouts ORDER BY workout_date DESC"
         cursor.execute(sql)
         results = cursor.fetchall()
         returnArray = []
@@ -59,8 +61,16 @@ class WorkoutsDAO:
 
     def createWorkout(self, workout):
         cursor = self.getcursor()
-        sql="insert into workouts (userID, sessionType, location, durationMinutes, difficulty, rating) values (%s,%s,%s,%s,%s,%s)"
-        values = (workout.get("userID"), workout.get("sessionType"), workout.get("location"), workout.get("durationMinutes"), workout.get("difficulty"), workout.get("rating"))
+        sql="INSERT INTO workouts (workout_date, userID, sessionType, location, durationMinutes, difficulty, rating) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+        values = (
+            workout.get("workout_date"),
+            workout.get("userID"),
+            workout.get("sessionType"),
+            workout.get("location"),
+            workout.get("durationMinutes"),
+            workout.get("difficulty"),
+            workout.get("rating")
+        )
         cursor.execute(sql, values)
 
         self.connection.commit()
@@ -72,9 +82,18 @@ class WorkoutsDAO:
 
     def updateWorkout(self, workoutID, workout):
         cursor = self.getcursor()
-        sql="update workouts set userID=%s, sessionType=%s, location=%s, durationMinutes=%s, difficulty=%s, rating=%s where workoutID = %s"
+        sql = "UPDATE workouts SET workout_date=%s, userID=%s, sessionType=%s, location=%s, durationMinutes=%s,difficulty=%s, rating=%s WHERE workoutID = %s"
         print(f"update users {workout}")
-        values = (workout.get("userID"), workout.get("sessionType"), workout.get("location"), workout.get("durationMinutes"), workout.get("difficulty"), workout.get("rating"), workoutID)
+        values = (
+            workout.get("workout_date"),
+            workout.get("userID"),
+            workout.get("sessionType"),
+            workout.get("location"),
+            workout.get("durationMinutes"),
+            workout.get("difficulty"),
+            workout.get("rating"),
+            workoutID
+        )
         cursor.execute(sql, values)
         self.connection.commit()
         self.closeAll()
@@ -92,12 +111,14 @@ class WorkoutsDAO:
         print("delete done")
 
     def convertToDictionary(self, resultLine):
-        attkeys=['workoutID','userID','sessionType', 'location', 'durationMinutes', 'difficulty', 'rating']
+        attkeys = ['workoutID', 'workout_date', 'userID', 'sessionType', 'location', 'durationMinutes', 'difficulty', 'rating']
         workout = {}
-        currentkey = 0
-        for attrib in resultLine:
-            workout[attkeys[currentkey]] = attrib
-            currentkey = currentkey + 1 
+        for i, attrib in enumerate(resultLine):
+            key = attkeys[i]
+            if key == "workout_date" and isinstance(attrib, (datetime.date, datetime.datetime)):
+                workout[key] = attrib.strftime('%Y-%m-%d')
+            else:
+                workout[key] = attrib
         return workout
 
     def get_dashboard_stats(self):

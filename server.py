@@ -7,6 +7,7 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 
 from dao.usersDAO import usersDAO
 from dao.workoutsDAO import workoutsDAO 
+from dao.weightDAO import weightDAO
 
 @app.route('/')
 def home():
@@ -22,7 +23,6 @@ def users():
 def workouts():
     return app.send_static_file('workoutsviewer.html')
 
-#curl "http://127.0.0.1:5000/users"
 @app.route('/api/users')
 @cross_origin()
 def getAllUsers():
@@ -30,14 +30,12 @@ def getAllUsers():
     results = usersDAO.getAllUsers()
     return jsonify(results)
 
-#curl "http://127.0.0.1:5000/users/2"
 @app.route('/users/<int:userID>')
 @cross_origin()
 def findById(userID):
     foundUser = usersDAO.findByID(userID)
     return jsonify(foundUser)
 
-#curl  -i -H "Content-Type:application/json" -X POST -d "#{\"title\":\"hello\",\"author\":\"someone\","price\":123}" http://127.#0.0.1:5000/users
 @app.route('/users', methods=['POST'])
 @cross_origin()
 def createUser():
@@ -57,7 +55,6 @@ def createUser():
     
     return jsonify(addeduser)
 
-#curl  -i -H "Content-Type:application/json" -X PUT -d "#{\"title\":\"hello\",\"author\":\"someone\","price\":123}" http://127.#0.0.1:5000/users/1
 @app.route('/users/<int:userID>', methods=['PUT'])
 @cross_origin()
 def update(userID):
@@ -167,7 +164,7 @@ def deleteWorkout(workoutID):
 
 @app.route("/dashboard-data")
 def dashboard_data():
-    cursor = workoutsDAO.getcursor()  # temporarily get a direct cursor
+    cursor = workoutsDAO.getcursor()  
     cursor.execute("SELECT DATABASE();")
     print("Currently connected to DB:", cursor.fetchone())
     
@@ -178,6 +175,35 @@ def dashboard_data():
 def user_summary():
     stats = usersDAO.get_user_stats()
     return jsonify(stats)
+
+@app.route('/weight-management')
+@cross_origin()
+def weight_view():
+    return app.send_static_file('weightviewer.html')
+
+@app.route('/api/weight-management', methods=['GET'])
+@cross_origin()
+def getWeightLogs():
+    return jsonify(weightDAO.getAllWeights())
+
+@app.route('/api/weight-management', methods=['POST'])
+@cross_origin()
+def createWeightLog():
+    data = request.get_json()
+    return jsonify(weightDAO.createWeightEntry(data))
+
+@app.route('/api/weight-management/<int:id>', methods=['DELETE'])
+@cross_origin()
+def deleteWeightLog(id):
+    weightDAO.deleteWeightEntry(id)
+    return jsonify({"message": f"Weight entry {id} deleted"})
+
+@app.route('/api/weight-management/<int:id>', methods=['PUT'])
+@cross_origin()
+def updateWeightLog(id):
+    data = request.get_json()
+    weightDAO.updateWeightEntry(id, data)
+    return jsonify({"message": f"Weight entry {id} updated"})
 
 if __name__ == '__main__' :
     app.run(debug= True)

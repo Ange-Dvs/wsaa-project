@@ -63,6 +63,10 @@
                 <input type="text" class="form-control" name="userID" />
             </div>
             <div class="form-group">
+                <label>Workout Date</label>
+                <input type="date" class="form-control" name="workout_date" />
+            </div>
+            <div class="form-group">
                 <label>Session Type</label>
                 <input type="text" class="form-control" name="sessionType" />
             </div>
@@ -83,7 +87,11 @@
                 <input type="number" class="form-control" name="rating" step="any" />
             </div>
         <button id="doCreateButton" class="btn btn-primary" onclick="doCreateWorkout()">Create</button>
-        <button id="doUpdateButton" class="btn btn-warning" onclick="doUpdateWorkout()">Update</button>
+        <div id="updateButtons" class="d-flex mt-2" style="display: none;">
+            <button id="doUpdateButton" class="btn btn-warning" onclick="doUpdate()">Update</button>
+            <button id="cancelButton" class="btn btn-secondary" onclick="cancelEdit()" type="button" style="margin-left: 0.5rem;">Cancel</button>
+        </div>
+
         </div>
         
         <div class="scrollable-table mx-auto" style="max-width: 1100px;">
@@ -92,9 +100,10 @@
                     <tr>
                         <th>Workout ID</th>
                         <th>User ID</th>
+                        <th>Workout Date</th>
                         <th>Session Type</th>
                         <th>Location</th>
-                        <th>Time in Mins</th>
+                        <th>Duration in Mins</th>
                         <th>Difficulty</th>
                         <th>Rating</th>
                         <th></th>
@@ -117,7 +126,7 @@
         document.getElementById('updateLabel').style.display="none"
 
         document.getElementById('doCreateButton').style.display="block"
-        document.getElementById('doUpdateButton').style.display="none"
+        document.getElementById('updateButtons').style.display="none"
 
     }
     function showViewAll(){
@@ -134,7 +143,7 @@
         document.getElementById('updateLabel').style.display="inline"
 
         document.getElementById('doCreateButton').style.display="none"
-        document.getElementById('doUpdateButton').style.display="block"
+        document.getElementById('updateButtons').style.display="flex"
 
 
         var rowElement = buttonElement.parentNode.parentNode
@@ -186,23 +195,26 @@
         cell2.innerHTML = workout.userID;
         cell2.classList.add("text-center");
         var cell3 = rowElement.insertCell(2);
-        cell3.innerHTML = workout.sessionType;
+        cell3.innerHTML = workout.workout_date;
+        cell3.classList.add("text-center");
         var cell4 = rowElement.insertCell(3);
-        cell4.innerHTML = workout.location;
+        cell4.innerHTML = workout.sessionType;
         var cell5 = rowElement.insertCell(4);
-        cell5.innerHTML = workout.durationMinutes;
-        cell5.classList.add("text-center");
+        cell5.innerHTML = workout.location;
         var cell6 = rowElement.insertCell(5);
-        cell6.innerHTML = workout.difficulty;
+        cell6.innerHTML = workout.durationMinutes;
+        cell6.classList.add("text-center");
         var cell7 = rowElement.insertCell(6);
-        cell7.innerHTML = workout.rating;
-        cell7.classList.add("text-center");
+        cell7.innerHTML = workout.difficulty;
         var cell8 = rowElement.insertCell(7);
-        cell8.innerHTML = '<button class="btn btn-warning btn-sm" onclick="showUpdate(this)">Update</button>';
+        cell8.innerHTML = workout.rating;
         cell8.classList.add("text-center");
         var cell9 = rowElement.insertCell(8);
-        cell9.innerHTML = '<button class="btn btn-danger btn-sm" onclick="doDelete(this)">Delete</button>';
+        cell9.innerHTML = '<button class="btn btn-warning btn-sm" onclick="showUpdate(this)">Update</button>';
         cell9.classList.add("text-center");
+        var cell10 = rowElement.insertCell(9);
+        cell10.innerHTML = '<button class="btn btn-danger btn-sm" onclick="doDelete(this)">Delete</button>';
+        cell10.classList.add("text-center");
 
     }
 
@@ -216,15 +228,28 @@
         form.querySelector('input[name="difficulty"]').value=''
         form.querySelector('input[name="rating"]').value=''
     }
+
+    function cancelEdit() {
+        clearForm();
+        showViewAll(); // hides the form and shows the table again
+        document.getElementById('createLabel').style.display = "inline";
+        document.getElementById('updateLabel').style.display = "none";
+        document.getElementById('doCreateButton').style.display = "block";
+        document.getElementById('updateButtons').style.display = "none";
+    }
+
+
     function getWorkoutFromRow(rowElement){
         var workout ={}
         workout.workoutID = rowElement.getAttribute("id")
         workout.userID = rowElement.cells[1].firstChild.textContent
-        workout.sessionType = rowElement.cells[2].firstChild.textContent
-        workout.location = rowElement.cells[3].firstChild.textContent
-        workout.durationMinutes = rowElement.cells[4].firstChild.textContent
-        workout.difficulty = rowElement.cells[5].firstChild.textContent
-        workout.rating = parseFloat(rowElement.cells[6].firstChild.textContent)
+        workout.workout_date = rowElement.cells[2].firstChild.textContent
+
+        workout.sessionType = rowElement.cells[3].firstChild.textContent
+        workout.location = rowElement.cells[4].firstChild.textContent
+        workout.durationMinutes = rowElement.cells[5].firstChild.textContent
+        workout.difficulty = rowElement.cells[6].firstChild.textContent
+        workout.rating = parseFloat(rowElement.cells[7].firstChild.textContent)
 
         return workout
     }
@@ -232,17 +257,19 @@
     {
         rowElement.cells[0].firstChild.textContent= workout.workoutID  
         rowElement.cells[1].firstChild.textContent= workout.userID 
-        rowElement.cells[2].firstChild.textContent= workout.sessionType
-        rowElement.cells[3].firstChild.textContent= workout.location
-        rowElement.cells[4].firstChild.textContent= workout.durationMinutes  
-        rowElement.cells[5].firstChild.textContent= workout.difficulty
-        rowElement.cells[6].firstChild.textContent= workout.rating
+        rowElement.cells[2].firstChild.textContent = workout.workout_date;
+        rowElement.cells[3].firstChild.textContent= workout.sessionType
+        rowElement.cells[4].firstChild.textContent= workout.location
+        rowElement.cells[5].firstChild.textContent= workout.durationMinutes  
+        rowElement.cells[6].firstChild.textContent= workout.difficulty
+        rowElement.cells[7].firstChild.textContent= workout.rating
     }
     function populateFormWithWorkout(workout){
         var form = document.getElementById('createUpdateForm')
         form.querySelector('input[name="workoutID"]').disabled = true
 
         form.querySelector('input[name="workoutID"]').value  = workout.workoutID  
+        form.querySelector('input[name="workout_date"]').value = workout.workout_date;
         form.querySelector('input[name="userID"]').value= workout.userID 
         form.querySelector('input[name="sessionType"]').value= workout.sessionType
         form.querySelector('input[name="location"]').value= workout.location
@@ -256,6 +283,7 @@
         var form = document.getElementById('createUpdateForm')
         var workout = {}
         workout.workoutID = form.querySelector('input[name="workoutID"]').value
+        workout.workout_date = form.querySelector('input[name="workout_date"]').value;
         workout.userID = form.querySelector('input[name="userID"]').value
         workout.sessionType = form.querySelector('input[name="sessionType"]').value
         workout.location = form.querySelector('input[name="location"]').value
@@ -274,7 +302,6 @@
             "data":"",
             "dataType": "JSON",
             "success":function(result){
-                //console.log(result);
                 for (workout of result){
                     addWorkoutToTable(workout);
                 }
@@ -295,7 +322,6 @@
             "dataType": "JSON",
             contentType: "application/json; charset=utf-8",
             "success":function(result){
-                //console.log(result);
                 workout.workoutID = result.workoutID
                 addWorkoutToTable(workout)
                 clearForm()
@@ -315,8 +341,6 @@
             "dataType": "JSON",
             contentType: "application/json; charset=utf-8",
             "success":function(result){
-               // console.log(result);
-                  
             },
             "error":function(xhr,status,error){
                 console.log("error: "+status+" msg:"+error);
@@ -331,8 +355,6 @@
             "dataType": "JSON",
             contentType: "application/json; charset=utf-8",
             "success":function(result){
-                //console.log(result);
-                  
             },
             "error":function(xhr,status,error){
                 console.log("error: "+status+" msg:"+error);
@@ -349,20 +371,17 @@
         warningInvalid.style.display = "none";
         warningNotFound.style.display = "none";
 
-        // ✅ Validate integer
         if (input !== "" && !/^\d+$/.test(input)) {
             warningInvalid.style.display = "block";
-            // Optionally hide rows on invalid input
             for (let i = 1; i < rows.length; i++) {
                 rows[i].style.display = "none";
             }
             return;
         }
 
-        // ✅ Filter rows
         let foundMatch = false;
         for (let i = 1; i < rows.length; i++) {
-            const userCell = rows[i].getElementsByTagName("td")[1]; // User ID column
+            const userCell = rows[i].getElementsByTagName("td")[1];
             if (userCell) {
                 const txtValue = userCell.textContent || userCell.innerText;
                 const showRow = (input === "" || txtValue.trim() === input);
@@ -371,7 +390,6 @@
             }
         }
 
-        // ✅ Show "not found" warning if no match
         if (input !== "" && !foundMatch) {
             warningNotFound.style.display = "block";
         }

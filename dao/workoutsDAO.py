@@ -18,14 +18,14 @@ class WorkoutsDAO:
         self.password=   cfg.mysql['password']
         self.database=   cfg.mysql['database']
 
-    def getcursor(self): 
+    def getcursor(self, dictionary=False): 
         self.connection = mysql.connector.connect(
             host=       self.host,
             user=       self.user,
             password=   self.password,
             database=   self.database,
         )
-        self.cursor = self.connection.cursor()
+        self.cursor = self.connection.cursor(dictionary=dictionary)
         return self.cursor
 
     def closeAll(self):
@@ -100,5 +100,39 @@ class WorkoutsDAO:
             currentkey = currentkey + 1 
         return workout
 
+    def get_dashboard_stats(self):
+        cursor = self.getcursor(dictionary=True)
+
+        # Get summary stats
+        sql_summary = """
+            SELECT 
+                COUNT(*) AS total_workouts,
+                ROUND(AVG(durationMinutes)) AS avg_duration,
+                COUNT(DISTINCT userID) AS unique_users
+            FROM workouts;
+        """
+        cursor.execute(sql_summary)
+        summary = cursor.fetchone()
+
+        # Get top 3 session types
+        sql_top_types = """
+            SELECT sessionType
+            FROM workouts
+            GROUP BY sessionType
+            ORDER BY COUNT(*) DESC
+            LIMIT 3;
+        """
+        cursor.execute(sql_top_types)
+        top_types = [row["sessionType"] for row in cursor.fetchall()]
+
+        self.closeAll()
+
+        # Combine all results
+        return {
+            "total_workouts": summary["total_workouts"],
+            "avg_duration": summary["avg_duration"],
+            "unique_users": summary["unique_users"],
+            "top_session_types": top_types
+        }
         
 workoutsDAO = WorkoutsDAO()

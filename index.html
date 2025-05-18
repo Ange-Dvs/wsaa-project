@@ -15,5 +15,76 @@
             <a href="/workouts" class="btn btn-outline-success btn-lg">📋 Workout Logs</a>
         </div>
     </div>
+    <div class="container mt-5 px-1">
+    <div class="row g-3">
+
+        <!-- Workout Summary -->
+        <div class="col-md-6">
+        <h4 class="text-primary mb-3">📊 Summary of Workouts</h4>
+        <div class="card p-3 h-100">
+            <ul id="dashboardStats" class="mb-0 ps-2 list-unstyled text-start">
+            <li>Total Workouts: <span id="totalWorkouts"></span></li>
+            <li>Avg Duration: <span id="avgDuration"></span> mins</li>
+            <li>Unique Users: <span id="uniqueUsers"></span></li>
+            <li>Top Workout Types:
+                <ol id="topTypes" class="ps-3 mb-0"></ol>
+            </li>
+            </ul>
+        </div>
+        </div>
+
+        <!-- User Summary -->
+        <div class="col-md-6">
+        <h4 class="text-primary mb-3">👥 Summary of Users</h4>
+        <div class="card p-3 h-100">
+            <ul id="userStats" class="mb-0 ps-2 list-unstyled text-start">
+            <li>Total Users: <span id="totalUsers"></span></li>
+            <li>Avg Age: <span id="avgAge"></span></li>
+            <li>Avg Weight Change (for weight loss users): <span id="avgWeightLoss"></span> kg</li>
+            <li>Top Goals:
+                <ol id="topGoals" class="mb-0 ps-3"></ol>
+            </li>
+            </ul>
+        </div>
+        </div>
+
+    </div>
+    </div>
+
+  <script>
+    fetch("/dashboard-data")
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("totalWorkouts").innerText = data.total_workouts;
+        document.getElementById("avgDuration").innerText = data.avg_duration;
+        document.getElementById("topTypes").innerText = data.most_common_type;
+        document.getElementById("uniqueUsers").innerText = data.unique_users;
+        const topTypesList = document.getElementById("topTypes");
+      topTypesList.innerHTML = "";
+      data.top_session_types.forEach(type => {
+        const li = document.createElement("li");
+        li.textContent = type;
+        topTypesList.appendChild(li);
+      });
+    });
+
+    fetch("/user-summary")
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById("totalUsers").innerText = data.total_users;
+            document.getElementById("avgAge").innerText = data.avg_age;
+            document.getElementById("avgWeightLoss").innerText = data.avg_weight_change_loss;
+
+            const goalList = document.getElementById("topGoals");
+            goalList.innerHTML = ""; // clear any previous entries
+            data.top_goals.forEach(goal => {
+            const li = document.createElement("li");
+            li.textContent = goal;
+            goalList.appendChild(li);
+            });
+        });
+  </script>
+
+
 </body>
 </html>

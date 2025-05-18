@@ -165,7 +165,19 @@ def deleteWorkout(workoutID):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route("/dashboard-data")
+def dashboard_data():
+    cursor = workoutsDAO.getcursor()  # temporarily get a direct cursor
+    cursor.execute("SELECT DATABASE();")
+    print("Currently connected to DB:", cursor.fetchone())
+    
+    stats = workoutsDAO.get_dashboard_stats()
+    return jsonify(stats)
 
+@app.route("/user-summary")
+def user_summary():
+    stats = usersDAO.get_user_stats()
+    return jsonify(stats)
 
 if __name__ == '__main__' :
     app.run(debug= True)

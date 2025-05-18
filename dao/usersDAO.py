@@ -1,4 +1,4 @@
-# boook dao 
+#
 # this is a demonstration a data layer that connects to a datbase
 # Author: Andrew Beatty
 
@@ -18,14 +18,14 @@ class UsersDAO:
         self.password=   cfg.mysql['password']
         self.database=   cfg.mysql['database']
 
-    def getcursor(self): 
+    def getcursor(self, dictionary=False): 
         self.connection = mysql.connector.connect(
             host=       self.host,
             user=       self.user,
             password=   self.password,
             database=   self.database,
         )
-        self.cursor = self.connection.cursor()
+        self.cursor = self.connection.cursor(dictionary=dictionary)
         return self.cursor
 
     def closeAll(self):
@@ -99,6 +99,52 @@ class UsersDAO:
             user[attkeys[currentkey]] = attrib
             currentkey = currentkey + 1 
         return user
+    
+    def get_user_stats(self):
+        cursor = self.getcursor(dictionary=True)
+
+        sql = """
+        SELECT 
+            COUNT(*) AS total_users,
+            ROUND(AVG(age)) AS avg_age
+        FROM users
+        """
+        cursor.execute(sql)
+        summary = cursor.fetchone()
+
+        # Inside get_user_stats()
+        sql_weight = """
+        SELECT 
+            COUNT(*) AS total_users,
+            ROUND(AVG(age)) AS avg_age,
+            (
+                SELECT ROUND(AVG(currentBodyWeight - startingBodyWeight), 1)
+                FROM users
+                WHERE LOWER(goal) = 'Lose Weight'
+            ) AS avg_weight_change_loss
+        FROM users
+        """
+        cursor.execute(sql_weight)
+        summary = cursor.fetchone()
+
+        sql_top_goals = """
+        SELECT goal
+        FROM users
+        GROUP BY goal
+        ORDER BY COUNT(*) DESC
+        LIMIT 3
+        """
+        cursor.execute(sql_top_goals)
+        top_goals = [row["goal"] for row in cursor.fetchall()]
+
+        self.closeAll()
+
+        return {
+            "total_users": summary["total_users"],
+            "avg_age": summary["avg_age"],
+            "avg_weight_change_loss": summary["avg_weight_change_loss"],
+            "top_goals": top_goals
+        }
 
         
 usersDAO = UsersDAO()

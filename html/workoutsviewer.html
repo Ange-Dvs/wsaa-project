@@ -88,7 +88,7 @@
             </div>
         <button id="doCreateButton" class="btn btn-primary" onclick="doCreateWorkout()">Create</button>
         <div id="updateButtons" class="d-flex mt-2" style="display: none;">
-            <button id="doUpdateButton" class="btn btn-warning" onclick="doUpdate()">Update</button>
+            <button id="doUpdateButton" class="btn btn-warning" onclick="doUpdateWorkout()">Update</button>
             <button id="cancelButton" class="btn btn-secondary" onclick="cancelEdit()" type="button" style="margin-left: 0.5rem;">Cancel</button>
         </div>
 
@@ -222,6 +222,7 @@
         var form = document.getElementById('createUpdateForm')
 
         form.querySelector('input[name="userID"]').value=''
+        form.querySelector('input[name="workout_date"]').value = '';
         form.querySelector('input[name="sessionType"]').value=''
         form.querySelector('input[name="location"]').value=''
         form.querySelector('input[name="durationMinutes"]').value=''

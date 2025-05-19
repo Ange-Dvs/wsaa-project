@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>View Weight Management</title>
+    <title>View Weight Tracker</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <style>
@@ -39,7 +39,7 @@
         <a href="/" class="btn btn-secondary">⬅️ Back to Home</a>
     </div>
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="text-primary mb-0">⚖️ Weight Management</h1>
+        <h1 class="text-primary mb-0">⚖️ Weight Tracker</h1>
         <div id="showCreateButton">
             <button class="btn btn-success" onclick="showCreate()">➕ Add New Entry</button>
         </div>
@@ -288,7 +288,7 @@ function filterByUser() {
     if (input !== "" && !found) warningNotFound.style.display = "block";
 }
 
-function getAllAjax() {
+function fetchAllWeights() {
     $.ajax({
         url: "/api/weight-management",
         method: "GET",
@@ -302,7 +302,9 @@ function getAllAjax() {
     });
 }
 
-getAllAjax();
+$(document).ready(function () {
+    fetchAllWeights();
+});
 </script>
 </body>
 </html>

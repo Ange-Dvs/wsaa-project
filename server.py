@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, abort
+from flask import Flask, jsonify, request, abort, send_from_directory
 from flask_cors import CORS, cross_origin
 
 app = Flask(__name__, static_url_path='', static_folder='.')
@@ -9,40 +9,45 @@ from dao.usersDAO import usersDAO
 from dao.workoutsDAO import workoutsDAO 
 from dao.weightDAO import weightDAO
 
+# Calls for HTML pages
 @app.route('/')
 def home():
-    return app.send_static_file('index.html')
+    return send_from_directory('html', 'index.html')
 
 @app.route('/users')
 @cross_origin()
 def users():
-    return app.send_static_file('usersviewer.html')
+    return send_from_directory('html', 'usersviewer.html')
 
 @app.route('/workouts')
 @cross_origin()
 def workouts():
-    return app.send_static_file('workoutsviewer.html')
+    return send_from_directory('html', 'workoutsviewer.html')
 
+@app.route('/weight-management')
+@cross_origin()
+def weight_view():
+    return send_from_directory('html', 'weightviewer.html')
+
+# Calls for getting information for users
 @app.route('/api/users')
 @cross_origin()
 def getAllUsers():
-    #print("in getall")
     results = usersDAO.getAllUsers()
     return jsonify(results)
 
-@app.route('/users/<int:userID>')
+@app.route('/api/users/<int:userID>', methods=['GET'])
 @cross_origin()
 def findById(userID):
     foundUser = usersDAO.findByID(userID)
     return jsonify(foundUser)
 
-@app.route('/users', methods=['POST'])
+@app.route('/api/users', methods=['POST'])
 @cross_origin()
 def createUser():
     
     if not request.json:
         abort(400)
-    # other checking 
     user = {
         "firstName": request.json['firstName'],
         "lastName": request.json['lastName'],
@@ -55,7 +60,7 @@ def createUser():
     
     return jsonify(addeduser)
 
-@app.route('/users/<int:userID>', methods=['PUT'])
+@app.route('/api/users/<int:userID>', methods=['PUT'])
 @cross_origin()
 def update(userID):
     foundUser = usersDAO.findByID(userID)
@@ -92,7 +97,7 @@ def update(userID):
     usersDAO.update(userID,foundUser)
     return jsonify(foundUser)
 
-@app.route('/users/<int:userID>' , methods=['DELETE'])
+@app.route('/api/users/<int:userID>' , methods=['DELETE'])
 @cross_origin()
 def delete(userID):
     try:
@@ -102,6 +107,7 @@ def delete(userID):
         print("Error deleting user:", e)
         return jsonify({"error": str(e)}), 500
 
+# Calls for getting information for workouts 
 @app.route('/api/workouts', methods=['GET'])
 @cross_origin()
 def getAllWorkouts():
@@ -162,25 +168,7 @@ def deleteWorkout(workoutID):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@app.route("/dashboard-data")
-def dashboard_data():
-    cursor = workoutsDAO.getcursor()  
-    cursor.execute("SELECT DATABASE();")
-    print("Currently connected to DB:", cursor.fetchone())
-    
-    stats = workoutsDAO.get_dashboard_stats()
-    return jsonify(stats)
-
-@app.route("/user-summary")
-def user_summary():
-    stats = usersDAO.get_user_stats()
-    return jsonify(stats)
-
-@app.route('/weight-management')
-@cross_origin()
-def weight_view():
-    return app.send_static_file('weightviewer.html')
-
+# Calls for getting information for weight-management
 @app.route('/api/weight-management', methods=['GET'])
 @cross_origin()
 def getWeightLogs():
@@ -204,6 +192,22 @@ def updateWeightLog(id):
     data = request.get_json()
     weightDAO.updateWeightEntry(id, data)
     return jsonify({"message": f"Weight entry {id} updated"})
+
+# Calls for getting information for summary data on homepage
+@app.route("/api/dashboard-data", methods=["GET"])
+def dashboard_data():
+    cursor = workoutsDAO.getcursor()  
+    cursor.execute("SELECT DATABASE();")
+    print("Currently connected to DB:", cursor.fetchone())
+    
+    stats = workoutsDAO.get_dashboard_stats()
+    return jsonify(stats)
+
+@app.route("/api/user-summary", methods=["GET"])
+def user_summary():
+    stats = usersDAO.get_user_stats()
+    return jsonify(stats)
+
 
 if __name__ == '__main__' :
     app.run(debug= True)

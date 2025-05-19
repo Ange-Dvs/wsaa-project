@@ -234,7 +234,7 @@
         return user
     }
 
-    function getAllAjax(){
+    function fetchAllUsers(){
         $.ajax({
             "url": "/api/users",
             "method":"GET",
@@ -255,7 +255,7 @@
     function createUserAjax(user){
         console.log(JSON.stringify(user));
         $.ajax({
-            "url": "/users",
+            "url": "/api/users",
             "method":"POST",
             "data":JSON.stringify(user),
             "dataType": "JSON",
@@ -274,7 +274,7 @@
     function updateUserAjax(user){
         console.log(JSON.stringify(user));
         $.ajax({
-            "url": "/users/"+encodeURI(user.userID),
+            "url": "/api/users/"+encodeURI(user.userID),
             "method":"PUT",
             "data":JSON.stringify(user),
             "dataType": "JSON",
@@ -288,7 +288,7 @@
     }
     function deleteUserAjax(userID){
         $.ajax({
-            "url": "/users/"+encodeURI(userID),
+            "url": "/api/users/"+encodeURI(userID),
             "method":"DELETE",
             "data":"",
             "dataType": "JSON",
@@ -326,7 +326,9 @@
         }
     }
 
-    getAllAjax();
+    $(document).ready(function () {
+        fetchAllUsers();
+    });
       
     </script>
 </html>

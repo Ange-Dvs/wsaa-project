@@ -44,9 +44,7 @@ https://github.com/Ange-Dvs/wsaa-project.git
    ``pip install -r requirements.txt``
 2. Set up the database using `db_setup.sql`
 3. Run the app locally:
-  ```bash
-  python server.py
-  ```
+``python server.py``
 
 ### Software used
 - **Backend:** Python (Flask)
@@ -74,51 +72,91 @@ The above shows the details and relationship between the tables. The green line 
 
 If a user is deleted from the users table it will delete the entries tied to that used in the other tables. This is keep the database clean and only keep data for active users. 
 
-### 
+### DAO files
+The DAO files contain the logic for interactions with the MySQL database and performing CRUD operations on the database.
+The credentials for connecting to the database are imported from the ``dbconfig.py`` file. 
+The SQL queries are parameterized to avoid SQL injection, which allows for the executions to be reused as needed when called, ``cursor.execute()`` fills the placeholders (represented by ``%s``) with data provided by the user in the UI.
+
+The ``getcursor()`` method handles establishing the connection to the MySQL database, it returns a cursor object which is used for executing the SQL queries.
+
+The ``closeAll()`` method is used to close the cursor after the SQL query is executed, preventing leaks. 
+
+### HTML files
 
 
-## Libraries used 
+
+## Frameworks, Libraries, and Tools Used
 
 Within the assignments various libraries are used including: 
-- ``flask`` send_from_directory
-- ``LIB2``
-- ``LIB3``
-- ``LIB4``
-- ``LIB5``
+- ``Flask``
+- ``Flask-CORS``
+- ``mysql-connector-python``
+- ``jQuery``
+- ``Bootstrap 4``
 - Built-in/Standard library
 
-<font size="4"><b>Library Name</b></font>   
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Summary of library and context for project
+<font size="4"><b>Flask</b></font>   
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Flask is a lightweight WSGI web application framework used to build the backend REST API for handling requests related to users, workouts, and weight logs. It also serves static HTML pages. Used in `server.py`
+
+The following are components are used throughout the assignments from `Flask`: 
+
+> ``Flask()`` (Class) -  Initializes the app: ``app = Flask(...)``.[^reference]
+
+> ``@app.route()`` (Decorator) - Defines API and HTML routes like ``/api/users``, ``/workouts``, etc..[^reference]
+
+> ``send_from_directory()`` (Function) - Used to return HTML files stored in a folder (e.g., ``index.html``)..[^reference]
+
+> ``jsonify()`` (Function) - Retrieves JSON data from POST/PUT requests.[^reference]
+
+> ``abort()`` (Function) - Used to return HTTP error responses when validation fails.[^reference]
+
+
+<font size="4"><b>Flask-CORS</b></font>   
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; This extension is used to allow Cross-Origin Resource Sharing so that the frontend (HTML + JS) can make requests to the Flask backend used in `server.py`.
 
 The following are methods used throughout the assignments from `LIB1`: 
 
-> ``.XXXX`` (Function/Method/Module/Class from `XXX` module ) - Summary and how used.[^reference]
+> ``CORS(app)`` (Function) - Enables CORS on the app instance.[^reference]
 
-> ``.XXXX`` (Function/Method/Module/Class from `XXX` module ) - Summary and how used.[^reference]
+> ``@cross_origin()`` (Decorator) - Applied to individual routes to permit frontend AJAX access.[^reference]
 
-> ``.XXXX`` (Function/Method/Module/Class from `XXX` module ) - Summary and how used.[^reference]
+<font size="4"><b>mysql-connector-python</b></font>   
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Used for interacting with the MySQL database across all DAO files (users, workouts, weight), used in DAO files.
 
-> ``.XXXX`` (Function/Method/Module/Class from `XXX` module ) - Summary and how used.[^reference]
+> ``mysql.connector.connect()`` (Function) -  Establishes a DB connection.[^reference]
 
-> ``.XXXX`` (Function/Method/Module/Class from `XXX` module ) - Summary and how used.[^reference]
+> ``cursor.execute(...)`` (Method) - Executes SQL queries.[^reference]
 
-> ``.XXXX`` (Function/Method/Module/Class from `XXX` module ) - Summary and how used.[^reference]
+> ``cursor.fetchall()`` / ``cursor.fetchone()`` (Method) - Retrieves query results.[^reference]
 
-> ``.XXXX`` (Function/Method/Module/Class from `XXX` module ) - Summary and how used.[^reference]
+> ``db.commit()`` (Method) - Commits changes for INSERT/UPDATE/DELETE operations.[^reference]
 
-> ``.XXXX`` (Function/Method/Module/Class from `XXX` module ) - Summary and how used.[^reference]
+<font size="4"><b>jQuery</b></font>   
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Used in the HTML files to make asynchronous API calls and manipulate the DOM
 
-> ``.XXXX`` (Function/Method/Module/Class from `XXX` module ) - Summary and how used.[^reference]
+> ``$.ajax()`` (Function) - Sends asynchronous requests to endpoints like ``/api/users``, ``/api/workouts``, etc.[^reference]
 
-> ``.XXXX`` (Function/Method/Module/Class from `XXX` module ) - Summary and how used.[^reference]
+> ``$(...).val()`` (Method) - Reads/writes input field values in forms.[^reference]
 
-> ``.XXXX`` (Function/Method/Module/Class from `XXX` module ) - Summary and how used.[^reference]
+> ``$(...).text()`` / ``$(...).html()`` (Method) - Updates content of HTML elements dynamically.[^reference]
 
-> ``.XXXX`` (Function/Method/Module/Class from `XXX` module ) - Summary and how used.[^reference]
+> ``$(document).ready()`` (Function) - Initializes fetches like fetchAllUsers() when the page loads.[^reference]
 
-> ``.XXXX`` (Function/Method/Module/Class from `XXX` module ) - Summary and how used.[^reference]
+<font size="4"><b>Bootstrap 4</b></font>   
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CSS framework used for responsive and styled HTML UI components like buttons, tables and form inputs, used within all HTML files for the project. It improves  the user interface aesthetics and responsiveness without custom CSS code.
 
-> ``.XXXX`` (Function/Method/Module/Class from `XXX` module ) - Summary and how used.[^reference]
+Examples:
+
+> ``.btn``, ``.btn-primary``, ``.form-control``, ``.table``, ``.card``, ``.container``, ``.thead-dark``, etc.
+
+<font size="4"><b>Python Standard Library</b></font>   
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Used throughout the Python files for the project.
+
+The following are methods used throughout the assignments from `LIB1`: 
+
+> ``json `` (Module) - Serializes and deserializes JSON data.[^reference]
+
+> ``datetime`` (Module) - Used to handle or parse dates, particularly for ``workout_date`` and ``logDate`` values within the project to ensure the dates are in the desired format of YYYY-MM-DD.[^reference]
 
 ### Template for libraries used 
 

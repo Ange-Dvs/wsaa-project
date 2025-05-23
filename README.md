@@ -54,6 +54,7 @@ https://github.com/Ange-Dvs/wsaa-project.git
 - **Online hosting:** Pythonanywhere
 
 ## Walkthrough of project
+The project is setup with the idea being an app for personal trainers to help their clients track their fitness journey. 
 
 ### Project Structure
 - `dao` – folder containing all the DAO files containing the interactions with the database
@@ -73,7 +74,9 @@ The above shows the details and relationship between the tables. The green line 
 If a user is deleted from the users table it will delete the entries tied to that used in the other tables. This is keep the database clean and only keep data for active users. 
 
 ### DAO files
-The DAO files contain the logic for interactions with the MySQL database and performing CRUD operations on the database.
+
+There are 3 DAO files, ``usersDAO``, ``weightDAO`` and ``workoutsDAO``.
+The DAO files contain the logic for interactions with the MySQL database and performing CRUD operations on the different database tables.
 The credentials for connecting to the database are imported from the ``dbconfig.py`` file. 
 The SQL queries are parameterized to avoid SQL injection, which allows for the executions to be reused as needed when called, ``cursor.execute()`` fills the placeholders (represented by ``%s``) with data provided by the user in the UI.
 
@@ -83,7 +86,95 @@ The ``closeAll()`` method is used to close the cursor after the SQL query is exe
 
 ### HTML files
 
+#### ``index.html``
+The ``index.html`` page is used as the homepage offering different routes to navigate to and a view of some summary statistics.
 
+<u>Features<u>  
+
+Navigation:
+- User Management
+- Workout Logs
+- Weight Tracker
+
+Live summary cards: 
+- Total workouts, average duration of the exercise, most popular workout types
+- Total users, average age of users and most popular fitness goal
+
+#### ``users.html``
+
+The ``users.html`` page allows to view and manage users within the database.
+
+<u>Features</u>
+
+- Displays the list of users in a table
+- Add new users via form
+- Edit existing users
+- Delete users 
+- Filter by a User ID
+
+<u>Backend Endpoints Used</u>
+
+- `GET /api/users`
+- `POST /api/users`
+- `PUT /api/users/<id>`
+- `DELETE /api/users/<id>`
+
+#### ``workoutsviewer.html``
+
+The ``workoutsviewer.html`` page allows the user to manage workout session entries for all users. 
+There is also the possibility to filter the workouts by a particular user ID. 
+
+<u>Features</u>
+
+- View workout logs in a dynamic table
+- Add new sessions
+- Edit or delete sessions
+- Filter logs by user
+- Display session types, location, duration, difficulty, and rating
+
+<u>Backend Endpoints Used<\u>
+
+- `GET /api/workouts`
+- `POST /api/workouts`
+- `PUT /api/workouts/<id>`
+- `DELETE /api/workouts/<id>`
+
+#### ``weightviewer.html``
+
+The ``weightviewer.html`` page allows the changes in a users weight over time to be tracked. 
+
+<u>Features</u>
+
+- View current, starting, and target weight
+- Add new weight entries
+- Update or delete existing entries
+- Sortable table display
+
+<u>>Backend Endpoints Used</u>
+
+- `GET /api/weights`
+- `POST /api/weights`
+- `PUT /api/weights/<id>`
+- `DELETE /api/weights/<id>`
+
+#### Technologies
+- jQuery 3.4.1
+- Bootstrap 4.3.1
+- Flask backend API
+
+### Current limitations & Area's for improvement
+While this use case is selected for demonstration purposes for the project, it is important to acknowledge some limitations that would need to be addressed before this could be utilized with real data: 
+
+- User Authentication: 
+Current any user logged in can perform CRUD operations on the tables. There is no distinction between a regular user and admins. 
+If this was to be used by an array of users i.e. personal trainers and clients, it would be better to have different roles and access to tables based on the logged in user. The metrics and details on the homepage could also be tailored to suit the user vs client experience and needs. 
+
+- Data privacy & GDPR:
+Personally Identifiable Information like User IDs, workout logs and sensitive fitness goals are openly handled and available with the current set up. While enhanced user restrictions would improve this, there would like need to be a data retention policy with the information accessible to the user. 
+If any information did qualify as PII the necessary actions would need to be taken to ensure that the usage is compliant with GDPR laws. 
+
+- Metrics: 
+Currently the landing page is showing general metrics across all users for the users and workouts table. 
 
 ## Frameworks, Libraries, and Tools Used
 

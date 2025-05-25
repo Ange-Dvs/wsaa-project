@@ -1,4 +1,6 @@
-#
+# usersDAO.py
+# Handles database operations for user records (CRUD functionality).
+# Author: Angela Davis
 
 import mysql.connector
 import dbconfig as cfg

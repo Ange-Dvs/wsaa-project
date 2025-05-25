@@ -1,3 +1,7 @@
+# weightsDAO.py
+# Manages weight tracking data interactions with the database.
+# Author: Angela Davis
+
 import mysql.connector
 import dbconfig as cfg
 import datetime

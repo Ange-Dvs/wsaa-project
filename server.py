@@ -1,3 +1,7 @@
+# server.py
+# Flask backend serving HTML pages and exposing RESTful API endpoints.
+# Author: Angela Davis
+
 from flask import Flask, jsonify, request, abort, send_from_directory
 from flask_cors import CORS
 

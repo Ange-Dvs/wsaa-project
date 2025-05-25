@@ -1,3 +1,7 @@
+-- create_tables.sql
+-- Defines the database schema and creates necessary tables for the project.
+-- Author: Angela Davis
+
 CREATE TABLE users (
     userID INT AUTO_INCREMENT PRIMARY KEY,
     firstName VARCHAR(255),

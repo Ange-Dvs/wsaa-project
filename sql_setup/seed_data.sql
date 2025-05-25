@@ -1,3 +1,7 @@
+-- insert_dummy_data.sql
+-- Populates the database with sample users, workouts, and weight logs.
+-- Author: Angela Davis
+
 -- 5 users for the users table
 INSERT INTO users (firstName, lastName, age, goal) VALUES
 ('Emma', 'Ryan', 27, 'Lose Weight'),

@@ -1,5 +1,5 @@
-# workout dao 
-# this is a demonstration a data layer that connects to a datbase
+# workoutsDAO.py
+# Provides database operations related to logged workout sessions.
 # Author: Angela Davis
 
 import mysql.connector

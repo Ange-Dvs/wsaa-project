@@ -2,9 +2,11 @@
 <html lang="en">
 <head>
     <title>View Weight Tracker</title>
+    <!-- Import jQuery and Bootstrap -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <style>
+        /* Styling for scrollable table and fixed headers */
         .scrollable-table {
             max-height: calc(100vh - 250px);
             overflow: auto;
@@ -29,6 +31,7 @@
     </style>
 </head>
 <body class="bg-light">
+    <!-- Header Section with Filter and Title -->
     <div class="container mt-5">
         <label for="userFilter">Search by User ID:</label>
         <input type="text" id="userFilter" placeholder="e.g. 123" onkeyup="filterByUser()">
@@ -38,6 +41,8 @@
         <div class="mb-3">
             <a href="/" class="btn btn-secondary">⬅️ Back to Home</a>
         </div>
+
+        <!-- Title and Add Entry Button -->
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1 class="text-primary mb-0">⚖️ Weight Tracker</h1>
             <div id="showCreateButton">
@@ -46,12 +51,16 @@
         </div>
     </div>
 
+    <!-- Form Section (Create & Update) -->
     <div id="createUpdateForm" class="card p-4 mb-4" style="display: none;">
         <h4 class="card-title">
             <span id="createLabel">Create Weight Entry</span>
             <span id="updateLabel">Update Weight Entry</span>
         </h4>
+        <!-- Hidden ID field for updates -->
         <input type="hidden" name="id" />
+
+        <!-- Input fields for weight details -->
         <div class="form-group">
             <label>User ID</label>
             <input type="text" class="form-control" name="userID" />
@@ -72,6 +81,8 @@
             <label>Starting Weight</label>
             <input type="number" class="form-control" name="startingBodyWeight" step="any" />
         </div>
+
+        <!-- Buttons for form actions -->
         <button id="doCreateButton" class="btn btn-primary" onclick="doCreate()" type="button" style="margin-left: 0.5rem;">Create</button>
         <div id="updateButtons" class="d-flex mt-2" style="display: none;">
             <button id="doUpdateButton" class="btn btn-warning" onclick="doUpdate()">Update</button>
@@ -79,6 +90,7 @@
         </div>
     </div>
 
+    <!-- Weight Table Display -->
     <div class="scrollable-table mx-auto" style="max-width: 1100px;">
         <table class="table table-bordered table-striped bg-white mb-0" id="weightTable">
             <thead class="thead-dark">
@@ -100,224 +112,240 @@
     </div>
 
     <script>
-    function showCreate() {
-        document.getElementById('showCreateButton').style.display = "none";
-        document.getElementById('createUpdateForm').style.display = "block";
-        document.getElementById('createLabel').style.display = "inline";
-        document.getElementById('updateLabel').style.display = "none";
-        document.getElementById('doCreateButton').style.display = "block";
-        document.getElementById('doUpdateButton').style.display = "none";
-    }
-
-    function showViewAll() {
-        document.getElementById('showCreateButton').style.display = "block";
-        document.getElementById('createUpdateForm').style.display = "none";
-    }
-
-    function showUpdate(buttonElement) {
-        showCreate();
-        document.getElementById('createLabel').style.display = "none";
-        document.getElementById('updateLabel').style.display = "inline";
-        document.getElementById('doCreateButton').style.display = "none";
-        document.getElementById('doUpdateButton').style.display = "flex";
-
-        var row = buttonElement.parentNode.parentNode;
-        var entry = getEntryFromRow(row);
-        populateFormWithEntry(entry);
-    }
-
-    function cancelEdit() {
-        clearForm();
-        showViewAll(); // hides the form and shows the table again
-        document.getElementById('createLabel').style.display = "inline";
-        document.getElementById('updateLabel').style.display = "none";
-        document.getElementById('doCreateButton').style.display = "block";
-        document.getElementById('updateButtons').style.display = "none";
-    }
-
-    function doCreate() {
-        var entry = getEntryFromForm();
-        $.ajax({
-            url: "/api/weight-management",
-            method: "POST",
-            data: JSON.stringify(entry),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function(result) {
-                entry.id = result.id;
-                addEntryToTable(entry);
-                clearForm();
-                showViewAll();
-            },
-            error: function(xhr, status, error) {
-                console.log("error:", status, error);
-            }
-        });
-    }
-
-    function doUpdate() {
-        var entry = getEntryFromForm();
-        $.ajax({
-            url: "/api/weight-management/" + encodeURIComponent(entry.id),
-            method: "PUT",
-            data: JSON.stringify(entry),
-            contentType: "application/json; charset=utf-8",
-            success: function(result) {
-                var row = document.getElementById(entry.id);
-                setEntryInRow(row, entry);
-                clearForm();
-                showViewAll();
-            },
-            error: function(xhr, status, error) {
-                console.log("error:", status, error);
-            }
-        });
-    }
-
-    function doDelete(button) {
-        var row = button.parentNode.parentNode;
-        var id = row.getAttribute("id");
-        $.ajax({
-            url: "/api/weight-management/" + encodeURIComponent(id),
-            method: "DELETE",
-            success: function() {
-                row.remove();
-            },
-            error: function(xhr, status, error) {
-                console.log("error:", status, error);
-            }
-        });
-    }
-
-    function addEntryToTable(entry) {
-        var table = document.querySelector("#weightTable tbody");
-        var row = table.insertRow();
-        row.setAttribute("id", entry.id);
-
-        var cell1 = row.insertCell(0);
-        cell1.innerHTML = entry.id;
-        cell1.classList.add("text-center");
-
-        var cell2 = row.insertCell(1);
-        cell2.innerHTML = entry.userID;
-        cell2.classList.add("text-center");
-
-        var cell3 = row.insertCell(2);
-        cell3.innerHTML = entry.currentWeightLogDate;
-
-        var cell4 = row.insertCell(3);
-        cell4.innerHTML = entry.currentBodyWeight;
-
-        var cell5 = row.insertCell(4);
-        cell5.innerHTML = entry.targetBodyWeight;
-
-        var cell6 = row.insertCell(5);
-        cell6.innerHTML = entry.startingBodyWeight;
-
-        var cell7 = row.insertCell(6);
-        cell7.innerHTML = '<button class="btn btn-warning btn-sm" onclick="showUpdate(this)">Update</button>';
-        cell7.classList.add("text-center");
-
-        var cell8 = row.insertCell(7);
-        cell8.innerHTML = '<button class="btn btn-danger btn-sm" onclick="doDelete(this)">Delete</button>';
-        cell8.classList.add("text-center");
-    }
-
-    function clearForm() {
-        var form = document.getElementById('createUpdateForm');
-        form.querySelector('input[name="id"]').value = "";
-        form.querySelector('input[name="userID"]').value = "";
-        form.querySelector('input[name="currentWeightLogDate"]').value = "";
-        form.querySelector('input[name="currentBodyWeight"]').value = "";
-        form.querySelector('input[name="targetBodyWeight"]').value = "";
-        form.querySelector('input[name="startingBodyWeight"]').value = "";
-    }
-
-    function getEntryFromForm() {
-        var form = document.getElementById('createUpdateForm');
-        return {
-            id: form.querySelector('input[name="id"]').value,
-            userID: form.querySelector('input[name="userID"]').value,
-            currentWeightLogDate: form.querySelector('input[name="currentWeightLogDate"]').value,
-            currentBodyWeight: form.querySelector('input[name="currentBodyWeight"]').value,
-            targetBodyWeight: form.querySelector('input[name="targetBodyWeight"]').value,
-            startingBodyWeight: form.querySelector('input[name="startingBodyWeight"]').value
-        };
-    }
-
-    function getEntryFromRow(row) {
-        return {
-            id: row.getAttribute("id"),
-            userID: row.cells[1].innerText,
-            currentWeightLogDate: row.cells[2].innerText,
-            currentBodyWeight: row.cells[3].innerText,
-            targetBodyWeight: row.cells[4].innerText,
-            startingBodyWeight: row.cells[5].innerText
-        };
-    }
-
-    function setEntryInRow(row, entry) {
-        row.cells[1].innerHTML = entry.userID;
-        row.cells[1].classList.add("text-center");
-        row.cells[2].innerHTML = entry.currentWeightLogDate;
-        row.cells[3].innerHTML = entry.currentBodyWeight;
-        row.cells[4].innerHTML = entry.targetBodyWeight;
-        row.cells[5].innerHTML = entry.startingBodyWeight;
-    }
-
-    function populateFormWithEntry(entry) {
-        var form = document.getElementById('createUpdateForm');
-        form.querySelector('input[name="id"]').value = entry.id;
-        form.querySelector('input[name="userID"]').value = entry.userID;
-        form.querySelector('input[name="currentWeightLogDate"]').value = entry.currentWeightLogDate;
-        form.querySelector('input[name="currentBodyWeight"]').value = entry.currentBodyWeight;
-        form.querySelector('input[name="targetBodyWeight"]').value = entry.targetBodyWeight;
-        form.querySelector('input[name="startingBodyWeight"]').value = entry.startingBodyWeight;
-    }
-
-    function filterByUser() {
-        const input = document.getElementById("userFilter").value.trim();
-        const warningInvalid = document.getElementById("userFilterWarning");
-        const warningNotFound = document.getElementById("userNotFoundWarning");
-        const rows = document.querySelectorAll("#weightTable tbody tr");
-
-        warningInvalid.style.display = "none";
-        warningNotFound.style.display = "none";
-
-        if (input !== "" && isNaN(input)) {
-            warningInvalid.style.display = "block";
-            rows.forEach(row => row.style.display = "none");
-            return;
+        // Show the form for creating a new entry
+        function showCreate() {
+            document.getElementById('showCreateButton').style.display = "none";
+            document.getElementById('createUpdateForm').style.display = "block";
+            document.getElementById('createLabel').style.display = "inline";
+            document.getElementById('updateLabel').style.display = "none";
+            document.getElementById('doCreateButton').style.display = "block";
+            document.getElementById('doUpdateButton').style.display = "none";
+        }
+        
+        // Hide form and show table
+        function showViewAll() {
+            document.getElementById('showCreateButton').style.display = "block";
+            document.getElementById('createUpdateForm').style.display = "none";
         }
 
-        let found = false;
-        rows.forEach(row => {
-            const userCell = row.cells[1];
-            const match = (input === "" || userCell.textContent.trim() === input);
-            row.style.display = match ? "" : "none";
-            if (match) found = true;
-        });
+        // Populate form with entry details and switch to update mode
+        function showUpdate(buttonElement) {
+            showCreate();
+            document.getElementById('createLabel').style.display = "none";
+            document.getElementById('updateLabel').style.display = "inline";
+            document.getElementById('doCreateButton').style.display = "none";
+            document.getElementById('doUpdateButton').style.display = "flex";
 
-        if (input !== "" && !found) warningNotFound.style.display = "block";
-    }
+            var row = buttonElement.parentNode.parentNode;
+            var entry = getEntryFromRow(row);
+            populateFormWithEntry(entry);
+        }
 
-    function fetchAllWeights() {
-        $.ajax({
-            url: "/api/weight-management",
-            method: "GET",
-            dataType: "JSON",
-            success: function(result) {
-                result.forEach(entry => addEntryToTable(entry));
-            },
-            error: function(xhr, status, error) {
-                console.log("error:", status, error);
+        // Cancel form and return to table view
+        function cancelEdit() {
+            clearForm();
+            showViewAll(); // hides the form and shows the table again
+            document.getElementById('createLabel').style.display = "inline";
+            document.getElementById('updateLabel').style.display = "none";
+            document.getElementById('doCreateButton').style.display = "block";
+            document.getElementById('updateButtons').style.display = "none";
+        }
+
+        // Send POST request to create a new weight entry
+        function doCreate() {
+            var entry = getEntryFromForm();
+            $.ajax({
+                url: "/api/weight-management",
+                method: "POST",
+                data: JSON.stringify(entry),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function(result) {
+                    entry.id = result.id;
+                    addEntryToTable(entry);
+                    clearForm();
+                    showViewAll();
+                },
+                error: function(xhr, status, error) {
+                    console.log("error:", status, error);
+                }
+            });
+        }
+
+        // Send PUT request to update an existing entry
+        function doUpdate() {
+            var entry = getEntryFromForm();
+            $.ajax({
+                url: "/api/weight-management/" + encodeURIComponent(entry.id),
+                method: "PUT",
+                data: JSON.stringify(entry),
+                contentType: "application/json; charset=utf-8",
+                success: function(result) {
+                    var row = document.getElementById(entry.id);
+                    setEntryInRow(row, entry);
+                    clearForm();
+                    showViewAll();
+                },
+                error: function(xhr, status, error) {
+                    console.log("error:", status, error);
+                }
+            });
+        }
+
+        // Send DELETE request for selected entry
+        function doDelete(button) {
+            var row = button.parentNode.parentNode;
+            var id = row.getAttribute("id");
+            $.ajax({
+                url: "/api/weight-management/" + encodeURIComponent(id),
+                method: "DELETE",
+                success: function() {
+                    row.remove();
+                },
+                error: function(xhr, status, error) {
+                    console.log("error:", status, error);
+                }
+            });
+        }
+
+        // Add a row for a new entry
+        function addEntryToTable(entry) {
+            var table = document.querySelector("#weightTable tbody");
+            var row = table.insertRow();
+            row.setAttribute("id", entry.id);
+
+            var cell1 = row.insertCell(0);
+            cell1.innerHTML = entry.id;
+            cell1.classList.add("text-center");
+
+            var cell2 = row.insertCell(1);
+            cell2.innerHTML = entry.userID;
+            cell2.classList.add("text-center");
+
+            var cell3 = row.insertCell(2);
+            cell3.innerHTML = entry.currentWeightLogDate;
+
+            var cell4 = row.insertCell(3);
+            cell4.innerHTML = entry.currentBodyWeight;
+
+            var cell5 = row.insertCell(4);
+            cell5.innerHTML = entry.targetBodyWeight;
+
+            var cell6 = row.insertCell(5);
+            cell6.innerHTML = entry.startingBodyWeight;
+
+            var cell7 = row.insertCell(6);
+            cell7.innerHTML = '<button class="btn btn-warning btn-sm" onclick="showUpdate(this)">Update</button>';
+            cell7.classList.add("text-center");
+
+            var cell8 = row.insertCell(7);
+            cell8.innerHTML = '<button class="btn btn-danger btn-sm" onclick="doDelete(this)">Delete</button>';
+            cell8.classList.add("text-center");
+        }
+
+        // Clear form inputs
+        function clearForm() {
+            var form = document.getElementById('createUpdateForm');
+            form.querySelector('input[name="id"]').value = "";
+            form.querySelector('input[name="userID"]').value = "";
+            form.querySelector('input[name="currentWeightLogDate"]').value = "";
+            form.querySelector('input[name="currentBodyWeight"]').value = "";
+            form.querySelector('input[name="targetBodyWeight"]').value = "";
+            form.querySelector('input[name="startingBodyWeight"]').value = "";
+        }
+
+        // Get data from form fields
+        function getEntryFromForm() {
+            var form = document.getElementById('createUpdateForm');
+            return {
+                id: form.querySelector('input[name="id"]').value,
+                userID: form.querySelector('input[name="userID"]').value,
+                currentWeightLogDate: form.querySelector('input[name="currentWeightLogDate"]').value,
+                currentBodyWeight: form.querySelector('input[name="currentBodyWeight"]').value,
+                targetBodyWeight: form.querySelector('input[name="targetBodyWeight"]').value,
+                startingBodyWeight: form.querySelector('input[name="startingBodyWeight"]').value
+            };
+        }
+
+        // Extract entry data from a row
+        function getEntryFromRow(row) {
+            return {
+                id: row.getAttribute("id"),
+                userID: row.cells[1].innerText,
+                currentWeightLogDate: row.cells[2].innerText,
+                currentBodyWeight: row.cells[3].innerText,
+                targetBodyWeight: row.cells[4].innerText,
+                startingBodyWeight: row.cells[5].innerText
+            };
+        }
+
+        // Update the contents of a row
+        function setEntryInRow(row, entry) {
+            row.cells[1].innerHTML = entry.userID;
+            row.cells[1].classList.add("text-center");
+            row.cells[2].innerHTML = entry.currentWeightLogDate;
+            row.cells[3].innerHTML = entry.currentBodyWeight;
+            row.cells[4].innerHTML = entry.targetBodyWeight;
+            row.cells[5].innerHTML = entry.startingBodyWeight;
+        }
+
+        // Pre-fill form for editing
+        function populateFormWithEntry(entry) {
+            var form = document.getElementById('createUpdateForm');
+            form.querySelector('input[name="id"]').value = entry.id;
+            form.querySelector('input[name="userID"]').value = entry.userID;
+            form.querySelector('input[name="currentWeightLogDate"]').value = entry.currentWeightLogDate;
+            form.querySelector('input[name="currentBodyWeight"]').value = entry.currentBodyWeight;
+            form.querySelector('input[name="targetBodyWeight"]').value = entry.targetBodyWeight;
+            form.querySelector('input[name="startingBodyWeight"]').value = entry.startingBodyWeight;
+        }
+
+        // Filter table rows by user ID
+        function filterByUser() {
+            const input = document.getElementById("userFilter").value.trim();
+            const warningInvalid = document.getElementById("userFilterWarning");
+            const warningNotFound = document.getElementById("userNotFoundWarning");
+            const rows = document.querySelectorAll("#weightTable tbody tr");
+
+            warningInvalid.style.display = "none";
+            warningNotFound.style.display = "none";
+
+            if (input !== "" && isNaN(input)) {
+                warningInvalid.style.display = "block";
+                rows.forEach(row => row.style.display = "none");
+                return;
             }
-        });
-    }
 
-    $(document).ready(function () {
-        fetchAllWeights();
-    });
+            let found = false;
+            rows.forEach(row => {
+                const userCell = row.cells[1];
+                const match = (input === "" || userCell.textContent.trim() === input);
+                row.style.display = match ? "" : "none";
+                if (match) found = true;
+            });
+
+            if (input !== "" && !found) warningNotFound.style.display = "block";
+        }
+
+        // Get all weight entries from the API
+        function fetchAllWeights() {
+            $.ajax({
+                url: "/api/weight-management",
+                method: "GET",
+                dataType: "JSON",
+                success: function(result) {
+                    result.forEach(entry => addEntryToTable(entry));
+                },
+                error: function(xhr, status, error) {
+                    console.log("error:", status, error);
+                }
+            });
+        }
+
+        // Call data load on page ready
+        $(document).ready(function () {
+            fetchAllWeights();
+        });
     </script>
 </body>   
 </html>

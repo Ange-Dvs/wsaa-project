@@ -1,10 +1,12 @@
 from flask import Flask, jsonify, request, abort, send_from_directory
 from flask_cors import CORS
 
+# Initialize Flask app and enable CORS
 app = Flask(__name__)
 cors = CORS(app) # allow CORS for all domains on all routes.
 app.config['CORS_HEADERS'] = 'Content-Type'
 
+# Import DAO modules
 from dao.usersDAO import usersDAO
 from dao.workoutsDAO import workoutsDAO 
 from dao.weightDAO import weightDAO
@@ -26,7 +28,7 @@ def workouts():
 def weight_view():
     return send_from_directory('html', 'weightviewer.html')
 
-# Calls for getting information for users
+# Calls for users
 
 @app.route('/api/users')
 def getAllUsers():
@@ -86,7 +88,7 @@ def delete(userID):
         return jsonify({"error": str(e)}), 500
 
 
-# Calls for getting information for workouts 
+# Calls for for workouts 
 
 @app.route('/api/workouts', methods=['GET'])
 def getAllWorkouts():
@@ -143,7 +145,7 @@ def deleteWorkout(workoutID):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# Calls for getting information for weight-management
+# Calls for weight-management
 
 @app.route('/api/weight-management', methods=['GET'])
 def getWeightLogs():
@@ -165,7 +167,7 @@ def updateWeightLog(id):
     weightDAO.updateWeightEntry(id, data)
     return jsonify({"message": f"Weight entry {id} updated"})
 
-# Calls for getting information for summary data on homepage
+# Calls for summary data on homepage
 
 @app.route("/api/dashboard-data", methods=["GET"])
 def dashboard_data():
@@ -180,6 +182,8 @@ def dashboard_data():
 def user_summary():
     stats = usersDAO.get_user_stats()
     return jsonify(stats)
+
+# Run the Flask App
 
 if __name__ == '__main__' :
     app.run(debug= True)

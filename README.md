@@ -163,7 +163,8 @@ The ``weightviewer.html`` page allows the changes in a users weight over time to
 - Flask backend API
 
 ### Current limitations & Area's for improvement
-While this use case is selected for demonstration purposes for the project, it is important to acknowledge some limitations that would need to be addressed before this could be utilized with real data.
+While this use case is selected for demonstration purposes for the project, it is important to acknowledge limitations that would need to be addressed before this could be utilized with real data.
+Some of which would include: 
 
 - **User Authentication**:  
 Current any user logged in can perform CRUD operations on the tables. There is no distinction between a regular user and admins. 

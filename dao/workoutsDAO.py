@@ -15,12 +15,14 @@ class WorkoutsDAO:
     database=   ''
     
     def __init__(self):
+        # Loading database credentials from config file
         self.host=       cfg.mysql['host']
         self.user=       cfg.mysql['user']
         self.password=   cfg.mysql['password']
         self.database=   cfg.mysql['database']
 
     def getcursor(self, dictionary=False): 
+        # Establishing the connection and returning the cursor
         self.connection = mysql.connector.connect(
             host=       self.host,
             user=       self.user,
@@ -31,10 +33,12 @@ class WorkoutsDAO:
         return self.cursor
 
     def closeAll(self):
+        # Closing the database connection
         self.connection.close()
         self.cursor.close()
          
     def getAllWorkouts(self):
+        # Getting all workouts and converting to a list of dictionaries
         cursor = self.getcursor()
         sql="select * from workouts ORDER BY workout_date DESC"
         cursor.execute(sql)
@@ -48,6 +52,7 @@ class WorkoutsDAO:
         return returnArray
 
     def findWorkoutByID(self, workoutID):
+        # Fetching a workout entry by the workout ID entered
         cursor = self.getcursor()
         sql="select * from workouts where workoutID = %s"
         values = (workoutID,)
@@ -58,6 +63,7 @@ class WorkoutsDAO:
         return returnvalue
 
     def createWorkout(self, workout):
+        # Adding a new user
         cursor = self.getcursor()
         sql="""
             INSERT INTO workouts 
@@ -82,6 +88,7 @@ class WorkoutsDAO:
 
 
     def updateWorkout(self, workoutID, workout):
+        # Updating the information for a workout entry
         cursor = self.getcursor()
         sql = """
             UPDATE workouts 
@@ -105,6 +112,7 @@ class WorkoutsDAO:
         self.closeAll()
         
     def deleteWorkout(self, workoutID):
+        # Deleting a workout entry using the workout ID
         cursor = self.getcursor()
         sql="delete from workouts where workoutID = %s"
         values = (workoutID,)
@@ -114,6 +122,7 @@ class WorkoutsDAO:
         print("delete done")
 
     def convertToDictionary(self, resultLine):
+        # Converting results to dictionary
         attkeys = ['workoutID', 'workout_date', 'userID', 'sessionType', 'location', 'durationMinutes', 'difficulty', 'rating']
         workout = {}
         for i, attrib in enumerate(resultLine):
@@ -125,6 +134,7 @@ class WorkoutsDAO:
         return workout
 
     def get_dashboard_stats(self):
+        # Returning summary statistics for workouts table and top 3 session types
         cursor = self.getcursor(dictionary=True)
         
         # Get summary stats

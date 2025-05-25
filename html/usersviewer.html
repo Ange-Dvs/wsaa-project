@@ -2,9 +2,11 @@
 <html lang="en">
 <head>
     <title> view Users</title>
+    <!-- jQuery for AJAX, Bootstrap for layout and styling -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <style>
+        /* Scrollable table styling */
         .scrollable-table {
         max-height: calc(100vh - 250px);
         overflow: auto;
@@ -32,6 +34,8 @@
     </style>
 </head>
 <body class="bg-light">
+
+    <!-- Search and heading -->
     <div class="container mt-5">
         <label for="nameFilter">Search by Surname:</label>
         <input type="text" id="nameFilter" placeholder="e.g. O'Brien" onkeyup="filterByLastName()">
@@ -42,6 +46,7 @@
             <a href="/" class="btn btn-secondary">⬅️ Back to Home</a>
         </div>
     
+        <!-- Page heading and create button -->
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1 class="text-primary mb-0">👤 User Manager</h1>
             <div id="showCreateButton">
@@ -49,13 +54,16 @@
             </div>
         </div>
     </div>
-        
+
+    <!-- Form for creating and updating users -->
     <div id="createUpdateForm" class="card p-4 mb-4" style="display: none;">
         <h4 class="card-title">
             <span id="createLabel">Create a User</span>
             <span id="updateLabel">Update a User</span>
         </h4>
         <input type="hidden" name="userID" />
+
+        <!-- Form fields -->
         <div class="form-group">
             <label>First Name</label>
             <input type="text" class="form-control" name="firstName" />
@@ -72,6 +80,8 @@
             <label>Goal</label>
             <input type="text" class="form-control" name="goal" />
         </div>
+
+        <!-- Action buttons -->
         <button id="doCreateButton" class="btn btn-primary" onclick="doCreate()" type="button" style="margin-left: 0.5rem;">Create</button>
         <div id="updateButtons" class="d-flex mt-2" style="display: none;">
             <button id="doUpdateButton" class="btn btn-warning" onclick="doUpdate()">Update</button>
@@ -79,6 +89,7 @@
         </div>
     </div>
         
+    <!-- Table displaying all users -->
     <div class="scrollable-table mx-auto" style="max-width: 1100px;">
         <table class="table table-bordered table-striped bg-white mb-0" id="userTable" style="min-width: 1000px;">
             <thead class="thead-dark">
@@ -99,6 +110,7 @@
     </div>
 
     <script>
+        // Show create form
         function showCreate(){
             document.getElementById('showCreateButton').style.display="none"
             document.getElementById('userTable').style.display="table"
@@ -112,12 +124,14 @@
         
         }
     
+        // Hide form and show table
         function showViewAll(){
             document.getElementById('showCreateButton').style.display="block"
             document.getElementById('userTable').style.display="table"
             document.getElementById('createUpdateForm').style.display="none"
         }
     
+        // Show update form with pre-filled values
         function showUpdate(buttonElement){
             document.getElementById('showCreateButton').style.display="none"
             document.getElementById('userTable').style.display="table"
@@ -135,6 +149,7 @@
             populateFormWithUser(user)
         }
     
+        // Cancel and reset form state
         function cancelEdit() {
             clearForm();
             showViewAll(); // hides the form and shows the table again
@@ -144,6 +159,7 @@
             document.getElementById('updateButtons').style.display = "none";
         }
     
+        // Create a new user via AJAX
         function doCreate(){
             var form = document.getElementById('createUpdateForm')
             var user = {}
@@ -160,8 +176,9 @@
 
             console.log(JSON.stringify(user))
             createUserAjax(user)
-        
         }
+
+        // Update an existing user
         function doUpdate(){
             var user = getUserFromForm();
             var rowElement = document.getElementById(user.userID);
@@ -171,7 +188,8 @@
             clearForm();
             showViewAll();
         }
-    
+        
+        // Delete a user
         function doDelete(r){
             var tableElement = document.getElementById('userTable');
             var rowElement = r.parentNode.parentNode;
@@ -180,6 +198,7 @@
             tableElement.deleteRow(index);
         }
     
+        // Add user to table
         function addUserToTable(user){
             var tableElement = document.getElementById('userTable').getElementsByTagName('tbody')[0];
             var rowElement = tableElement.insertRow(-1);
@@ -204,14 +223,16 @@
             cell7.classList.add("text-center");
         }
     
+        // Reset form fields
         function clearForm(){
             var form = document.getElementById('createUpdateForm')
-        
             form.querySelector('input[name="firstName"]').value=''
             form.querySelector('input[name="lastName"]').value=''
             form.querySelector('input[name="age"]').value=''
             form.querySelector('input[name="goal"]').value=''
         }
+
+        // Get user from row
         function getUserFromRow(rowElement){
             var user ={}
             user.userID  = rowElement.getAttribute("id")
@@ -222,6 +243,8 @@
         
             return user
         }
+
+        // Set updated user in table
         function setUserInRow(rowElement, user){
             rowElement.cells[0].firstChild.textContent= user.userID  
             rowElement.cells[1].firstChild.textContent= user.firstName 
@@ -230,6 +253,7 @@
             rowElement.cells[4].firstChild.textContent= user.goal  
         }
     
+        // Pre-fill form with user info
         function populateFormWithUser(user){
             var form = document.getElementById('createUpdateForm')
             form.querySelector('input[name="userID"]').disabled = true
@@ -242,6 +266,7 @@
             return user
         }
     
+        // Get user from form
         function getUserFromForm(){
             var form = document.getElementById('createUpdateForm')
             var user = {}
@@ -255,6 +280,7 @@
             return user
         }
     
+        // Fetch all users on load
         function fetchAllUsers(){
             $.ajax({
                 "url": "/api/users",
@@ -272,6 +298,7 @@
             });
         }
     
+        // POST user to server
         function createUserAjax(user){
             console.log(JSON.stringify(user));
             $.ajax({
@@ -292,6 +319,7 @@
             });
         }
     
+        // PUT user update to server
         function updateUserAjax(user){
             console.log(JSON.stringify(user));
             $.ajax({
@@ -308,6 +336,7 @@
             });
         }
     
+        // DELETE user from server
         function deleteUserAjax(userID){
             $.ajax({
                 "url": "/api/users/"+encodeURI(userID),
@@ -323,6 +352,7 @@
             });
         }
     
+        // Live surname filter
         function filterByLastName() {
             const input = document.getElementById("nameFilter").value.trim().toLowerCase();
             const warningNotFound = document.getElementById("nameNotFoundWarning");
@@ -349,6 +379,7 @@
             }
         }
     
+        // On page load
         $(document).ready(function () {
             fetchAllUsers();
         });

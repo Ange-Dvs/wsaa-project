@@ -12,12 +12,14 @@ class UsersDAO:
     database=   ''
     
     def __init__(self):
+        # Loading database credentials from config file
         self.host=       cfg.mysql['host']
         self.user=       cfg.mysql['user']
         self.password=   cfg.mysql['password']
         self.database=   cfg.mysql['database']
 
     def getcursor(self, dictionary=False): 
+        # Establishing the connection and returning the cursor
         self.connection = mysql.connector.connect(
             host=       self.host,
             user=       self.user,
@@ -28,10 +30,12 @@ class UsersDAO:
         return self.cursor
 
     def closeAll(self):
+        # Closing the database connection
         self.connection.close()
         self.cursor.close()
          
     def getAllUsers(self):
+        # Getting all users and converting to a list of dictionaries
         cursor = self.getcursor()
         sql="select * from users"
         cursor.execute(sql)
@@ -46,6 +50,7 @@ class UsersDAO:
         return returnArray
 
     def findByID(self, userID):
+        # Fetching a user by the ID entered
         cursor = self.getcursor()
         sql="select * from users where userID = %s"
         values = (userID,)
@@ -57,6 +62,7 @@ class UsersDAO:
         return returnvalue
 
     def createUser(self, user):
+        # Inserting a new user
         cursor = self.getcursor()
         sql="insert into users (firstName, lastName, age, goal) values (%s,%s,%s,%s)"
         values = (
@@ -73,6 +79,7 @@ class UsersDAO:
         return user
 
     def update(self, userID, user):
+        # Updating the information for a user
         cursor = self.getcursor()
         sql="""
             update users 
@@ -92,6 +99,7 @@ class UsersDAO:
         self.closeAll()
         
     def delete(self, userID):
+        # Deleting a user by user ID
         cursor = self.getcursor()
         sql="delete from users where userID = %s"
         values = (userID,)
@@ -101,6 +109,7 @@ class UsersDAO:
         print("delete done")
 
     def convertToDictionary(self, resultLine):
+        # Converting results to dictionary
         attkeys=['userID','firstName','lastName', 'age', 'goal']
         user = {}
         currentkey = 0
@@ -110,6 +119,7 @@ class UsersDAO:
         return user
     
     def get_user_stats(self):
+        # Returning summary statistics for users table and top 3 goals
         cursor = self.getcursor(dictionary=True)
 
         sql = """

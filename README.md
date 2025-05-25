@@ -68,7 +68,8 @@ The project is setup with the idea being an app for personal trainers to help th
 ### Database Design
 Tables: `users`, `workouts`, `weight_management`
 
-![ER Diagrams for tables](docs/sql_er_diagram.png)
+![ER Diagrams for tables](docs/sql_er_diagram.png)  
+
 The above shows the details and relationship between the tables. The green line indicates the keys which are linked, both workouts and weight_management have foreign key constraints with the userID within the users table. 
 
 If a user is deleted from the users table it will delete the entries tied to that used in the other tables. This is keep the database clean and only keep data for active users. 

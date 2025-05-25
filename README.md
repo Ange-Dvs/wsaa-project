@@ -179,7 +179,6 @@ Currently the landing page is showing general metrics across all users for the u
 - **Accessibility**:  
 Certain aspects of the HTML files would need to be enhanced from an accessibility perspective. Currently navigation works using mouse and keyboard and in Chrome, the native tabbing works for moving throughout the pages. This would help users would could not use a mouse. In terms of users would may rely on a screen reader ARIA labels would be a potential path forward to help with screen reader compatibility.
 
-
 ## Frameworks, Libraries, and Tools Used
 
 Within the assignments various libraries are used including: 
@@ -196,73 +195,187 @@ Within the assignments various libraries are used including:
 
 The following are components are used throughout the assignments from `Flask`: 
 
-> ``Flask()`` (Class) -  Initializes the app: ``app = Flask(...)``.[^reference]
+> ``Flask()`` (Class) -  Initializes the app: ``app = Flask(...)``.[^1]
 
-> ``@app.route()`` (Decorator) - Defines API and HTML routes like ``/api/users``, ``/workouts``, etc..[^reference]
+> ``@app.route()`` (Decorator) - Defines API and HTML routes like ``/api/users``, ``/workouts``, etc..[^2]
 
-> ``send_from_directory()`` (Function) - Used to return HTML files stored in a folder (e.g., ``index.html``)..[^reference]
+> ``send_from_directory()`` (Function) - Used to return HTML files stored in a folder (e.g., ``index.html``)..[^3]
 
-> ``jsonify()`` (Function) - Retrieves JSON data from POST/PUT requests.[^reference]
+> ``jsonify()`` (Function) - Retrieves JSON data from POST/PUT requests.[^4]
 
-> ``abort()`` (Function) - Used to return HTTP error responses when validation fails.[^reference]
+> ``abort()`` (Function) - Raises an HTTP Exception for given status code.[^5]
 
-
-<font size="4"><b>Flask-CORS</b></font>   
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; This extension is used to allow Cross-Origin Resource Sharing so that the frontend (HTML + JS) can make requests to the Flask backend used in `server.py`.
-
-The following are methods used throughout the assignments from `LIB1`: 
-
-> ``CORS(app)`` (Function) - Enables CORS on the app instance.[^reference]
-
-> ``@cross_origin()`` (Decorator) - Applied to individual routes to permit frontend AJAX access.[^reference]
+> ``CORS(app)`` (Function) - From the ``Flask-CORS`` extension. This function enables CORS on the app instance so that the frontend is able to make requests to the backend in ``server.py``.[^6]
 
 <font size="4"><b>mysql-connector-python</b></font>   
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Used for interacting with the MySQL database across all DAO files (users, workouts, weight), used in DAO files.
 
-> ``mysql.connector.connect()`` (Function) -  Establishes a DB connection.[^reference]
+> ``mysql.connector.connect()`` (Function) -  Establishes a database connection, the function contains the details to be used to initiate the connection including the ``host``, ``user``, ``password`` and ``database``.[^7]
 
-> ``cursor.execute(...)`` (Method) - Executes SQL queries.[^reference]
+> ``cursor.execute(...)`` (Method) - Executes a given SQL query. Within the DAO files, .[^8]
 
-> ``cursor.fetchall()`` / ``cursor.fetchone()`` (Method) - Retrieves query results.[^reference]
+> ``cursor.fetchall()`` / ``cursor.fetchone()`` (Method) - Retrieves query results, ``fetchall`` will return multiple lines while ``fetchone`` returns one.[^9]
 
-> ``db.commit()`` (Method) - Commits changes for INSERT/UPDATE/DELETE operations.[^reference]
+> ``db.commit()`` (Method) - Commits changes for INSERT/UPDATE/DELETE operations. This method should be called after every transaction that is expected to modify data for a table.[^10]
 
 <font size="4"><b>jQuery</b></font>   
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Used in the HTML files to make asynchronous API calls and manipulate the DOM
 
-> ``$.ajax()`` (Function) - Sends asynchronous requests to endpoints like ``/api/users``, ``/api/workouts``, etc.[^reference]
+> ``$.ajax()`` (Function) - Sends asynchronous requests to endpoints like ``/api/users``, ``/api/workouts``, etc.[^11]
 
-> ``$(...).val()`` (Method) - Reads/writes input field values in forms.[^reference]
+> ``document.getElementById(...).innerText`` / ``.innerHTML`` (DOM Properties) - Used to update the content of HTML elements dynamically.[^12]
 
-> ``$(...).text()`` / ``$(...).html()`` (Method) - Updates content of HTML elements dynamically.[^reference]
-
-> ``$(document).ready()`` (Function) - Initializes fetches like fetchAllUsers() when the page loads.[^reference]
+> ``$(document).ready()`` (Function) - Initializes fetches like fetchAllUsers() when the page loads.[^13]
 
 <font size="4"><b>Bootstrap 4</b></font>   
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CSS framework used for responsive and styled HTML UI components like buttons, tables and form inputs, used within all HTML files for the project. It improves  the user interface aesthetics and responsiveness without custom CSS code.
 
-Examples:
+Some examples used in the HTML files for the project:
 
-> ``.btn``, ``.btn-primary``, ``.form-control``, ``.table``, ``.card``, ``.container``, ``.thead-dark``, etc.
+> ``.btn``/ ``.btn-primary`` (Class) - To be used with ``<button>`` to create styled buttons with consistent padding, borders, and hover effects. [^14]
+
+> ``.form-control``  (Class) – Used to style form input fields, ensuring consistent height, padding, and border appearance. [^15]
+
+> ``.table`` (Class) – Provides a styled base for HTML tables with spacing, borders, and typography. [^16]
+
+> ``.card`` (Class) – Creates a boxed content container with padding, border, and shadow; used for UI panels and summaries. [^17]
+
+> ``.container`` (Class) – A responsive layout wrapper that centres content and provides horizontal padding. [^18]
+
+> ``.thead-dark`` (Class) – Styles table headers with a dark background and light text for contrast. [^19]
 
 <font size="4"><b>Python Standard Library</b></font>   
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Used throughout the Python files for the project.
 
 The following are methods used throughout the assignments from `Python Standard Library`: 
 
-> ``json `` (Module) - Serializes and deserializes JSON data.[^reference]
+> ``json`` (Module) - Used to convert data from Python dictionaries and JSON format in Flask routes. This allows an API to receive request bodies using ``.get_json()`` and return a structured responses using ``jsonify()``. [^20]
 
-> ``datetime`` (Module) - Used to handle or parse dates, particularly for ``workout_date`` and ``logDate`` values within the project to ensure the dates are in the desired format of YYYY-MM-DD.[^reference]
+> ``datetime`` (Module) - Used to handle or parse dates, particularly for ``workout_date`` and ``logDate`` values within the project to ensure the dates are in the desired format of YYYY-MM-DD.[^21]
 
 <font size="4"><b>Pythonanywhere</b></font>   
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; This project is hosted on PythonAnywhere, a web-based platform for running Python applications. The Flask backend and serve the HTML pages, making the app publicly accessible for testing and demonstration.
 
-This project is hosted on PythonAnywhere, a web-based platform for running Python applications. The Flask backend and serve the HTML pages, making the app publicly accessible for testing and demonstration.
+URL for project hosted on Pythonanywhere: https://adproject.pythonanywhere.com/
 
-URL: https://adproject.pythonanywhere.com/
+**Steps for setting up Pythonanywhere:**
+1. Create an account:  
+Sign up at https://www.pythonanywhere.com
+
+2. Import the project:  
+Using the ``BASH`` console the GitHub repo was cloned. 
+
+3. Install dependencies:   
+Run ``pip3 install --user -r requirements.txt`` in the ``BASH`` console.
+
+4. Configure the web app:  
+In the "Web" tab, click "Add a new web app", chose Flask and select the correct Python version. Set ``server.py`` as the file to use for the Flask app.
+
+5. Update WSGI file:  
+Edit the WSFI configuration file to ensure it imports the app from the correct module:   
+&nbsp;&nbsp;&nbsp;``from server import app as application`` 
+
+6. Confirm the directory: 
+Within the **Code** section of the "Web" tab, validate that the directory is set to the correct folder where the ``server.py`` file is located.  
+
+7. Reload the app:  
+Click the "Reload" option at the top of the page, the site will then be live with the desired configuration. 
 
 ***
 End 
 
 **Author:**   
 Angela Davis
+
+[^1]: https://flask.palletsprojects.com/en/latest/api/#module-flask
+[^2]: https://flask.palletsprojects.com/en/latest/api/#flask.Flask.route
+[^3]: https://flask.palletsprojects.com/en/latest/api/#flask.send_from_directory
+[^4]: https://flask.palletsprojects.com/en/latest/api/#flask.json.jsonify
+[^5]: https://flask.palletsprojects.com/en/latest/api/#flask.abort
+[^6]: https://flask-cors.readthedocs.io/en/latest/#simple-usage
+[^7]: https://dev.mysql.com/doc/connector-python/en/connector-python-connectargs.html
+[^8]: https://dev.mysql.com/doc/connector-python/en/connector-python-api-mysqlcursor-execute.html
+[^9]: https://www.geeksforgeeks.org/querying-data-from-a-database-using-fetchone-and-fetchall/
+[^10]: https://dev.mysql.com/doc/connector-python/en/connector-python-api-mysqlconnection-commit.html
+[^11]: https://api.jquery.com/jQuery.ajax/#jQuery-ajax-url-settings
+[^12]: https://www.w3schools.com/jsref/prop_html_innerhtml.asp#:~:text=Try%20it%20Yourself%20%C2%BB-,The%20Differences%20Between%0AinnerHTML%2C%20innerText%20and%20textContent,-The%20innerHTML%20property
+[^13]: https://api.jquery.com/ready/
+[^14]: https://getbootstrap.com/docs/4.3/components/buttons/#button-tags
+[^15]: https://getbootstrap.com/docs/4.3/components/forms/#form-controls
+[^16]: https://getbootstrap.com/docs/4.3/content/tables/
+[^17]: https://getbootstrap.com/docs/4.3/components/card/
+[^18]: https://getbootstrap.com/docs/4.3/layout/overview/#containers
+[^19]: https://getbootstrap.com/docs/4.3/content/tables/#table-head-options
+[^20]: https://docs.python.org/3/library/json.html
+[^21]: https://www.geeksforgeeks.org/python-datetime-module/
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:
+[^1]:

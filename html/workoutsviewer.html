@@ -297,6 +297,40 @@
             return workout
         }
     
+        function filterByUser() {
+            const input = document.getElementById("userFilter").value.trim();
+            const warningInvalid = document.getElementById("userFilterWarning");
+            const warningNotFound = document.getElementById("userNotFoundWarning");
+            const table = document.getElementById("workoutTable");
+            const rows = table.getElementsByTagName("tr");
+
+            warningInvalid.style.display = "none";
+            warningNotFound.style.display = "none";
+
+            if (input !== "" && !/^\d+$/.test(input)) {
+                warningInvalid.style.display = "block";
+                for (let i = 1; i < rows.length; i++) {
+                    rows[i].style.display = "none";
+                }
+                return;
+            }
+
+            let foundMatch = false;
+            for (let i = 1; i < rows.length; i++) {
+                const userCell = rows[i].getElementsByTagName("td")[1];
+                if (userCell) {
+                    const txtValue = userCell.textContent || userCell.innerText;
+                    const showRow = (input === "" || txtValue.trim() === input);
+                    rows[i].style.display = showRow ? "" : "none";
+                    if (showRow) foundMatch = true;
+                }
+            }
+
+            if (input !== "" && !foundMatch) {
+                warningNotFound.style.display = "block";
+            }
+        }
+
         function getAllAjax(){
             $.ajax({
                 "url": "/api/workouts",
@@ -362,41 +396,7 @@
                     console.log("error: "+status+" msg:"+error);
                 }
             });
-        }
-        function filterByUser() {
-            const input = document.getElementById("userFilter").value.trim();
-            const warningInvalid = document.getElementById("userFilterWarning");
-            const warningNotFound = document.getElementById("userNotFoundWarning");
-            const table = document.getElementById("workoutTable");
-            const rows = table.getElementsByTagName("tr");
-        
-            warningInvalid.style.display = "none";
-            warningNotFound.style.display = "none";
-        
-            if (input !== "" && !/^\d+$/.test(input)) {
-                warningInvalid.style.display = "block";
-                for (let i = 1; i < rows.length; i++) {
-                    rows[i].style.display = "none";
-                }
-                return;
-            }
-        
-            let foundMatch = false;
-            for (let i = 1; i < rows.length; i++) {
-                const userCell = rows[i].getElementsByTagName("td")[1];
-                if (userCell) {
-                    const txtValue = userCell.textContent || userCell.innerText;
-                    const showRow = (input === "" || txtValue.trim() === input);
-                    rows[i].style.display = showRow ? "" : "none";
-                    if (showRow) foundMatch = true;
-                }
-            }
-        
-            if (input !== "" && !foundMatch) {
-                warningNotFound.style.display = "block";
-            }
-        }
-    
+        }  
     
         getAllAjax();    
     </script>

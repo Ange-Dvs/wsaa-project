@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request, abort, send_from_directory
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
 
 app = Flask(__name__)
 cors = CORS(app) # allow CORS for all domains on all routes.
@@ -15,36 +15,30 @@ def home():
     return send_from_directory('html', 'index.html')
 
 @app.route('/users')
-@cross_origin()
 def users():
     return send_from_directory('html', 'usersviewer.html')
 
 @app.route('/workouts')
-@cross_origin()
 def workouts():
     return send_from_directory('html', 'workoutsviewer.html')
 
 @app.route('/weight-management')
-@cross_origin()
 def weight_view():
     return send_from_directory('html', 'weightviewer.html')
 
 # Calls for getting information for users
 
 @app.route('/api/users')
-@cross_origin()
 def getAllUsers():
     results = usersDAO.getAllUsers()
     return jsonify(results)
 
 @app.route('/api/users/<int:userID>', methods=['GET'])
-@cross_origin()
 def findById(userID):
     foundUser = usersDAO.findByID(userID)
     return jsonify(foundUser)
 
 @app.route('/api/users', methods=['POST'])
-@cross_origin()
 def createUser():
     
     if not request.json:
@@ -62,7 +56,6 @@ def createUser():
     return jsonify(addeduser)
 
 @app.route('/api/users/<int:userID>', methods=['PUT'])
-@cross_origin()
 def update(userID):
     foundUser = usersDAO.findByID(userID)
     if not foundUser:
@@ -99,7 +92,6 @@ def update(userID):
     return jsonify(foundUser)
 
 @app.route('/api/users/<int:userID>' , methods=['DELETE'])
-@cross_origin()
 def delete(userID):
     try:
         usersDAO.delete(userID)
@@ -112,19 +104,16 @@ def delete(userID):
 # Calls for getting information for workouts 
 
 @app.route('/api/workouts', methods=['GET'])
-@cross_origin()
 def getAllWorkouts():
     results = workoutsDAO.getAllWorkouts()
     return jsonify(results)
 
 @app.route('/api/workouts/<int:workoutID>', methods=['GET'])
-@cross_origin()
 def getWorkoutByID(workoutID):
     workout = workoutsDAO.findWorkoutByID(workoutID)
     return jsonify(workout)
 
 @app.route('/api/workouts', methods=['POST'])
-@cross_origin()
 def createWorkout():
     if not request.json:
         abort(400)
@@ -142,7 +131,6 @@ def createWorkout():
     return jsonify(addedWorkout), 201
 
 @app.route('/api/workouts/<int:workoutID>', methods=['PUT'])
-@cross_origin()
 def updateWorkout(workoutID):
     existingWorkout = workoutsDAO.findWorkoutByID(workoutID)
     if not existingWorkout:
@@ -163,7 +151,6 @@ def updateWorkout(workoutID):
     return jsonify(existingWorkout)
 
 @app.route('/api/workouts/<int:workoutID>', methods=['DELETE'])
-@cross_origin()
 def deleteWorkout(workoutID):
     try:
         workoutsDAO.deleteWorkout(workoutID)
@@ -174,24 +161,20 @@ def deleteWorkout(workoutID):
 # Calls for getting information for weight-management
 
 @app.route('/api/weight-management', methods=['GET'])
-@cross_origin()
 def getWeightLogs():
     return jsonify(weightDAO.getAllWeights())
 
 @app.route('/api/weight-management', methods=['POST'])
-@cross_origin()
 def createWeightLog():
     data = request.get_json()
     return jsonify(weightDAO.createWeightEntry(data))
 
 @app.route('/api/weight-management/<int:id>', methods=['DELETE'])
-@cross_origin()
 def deleteWeightLog(id):
     weightDAO.deleteWeightEntry(id)
     return jsonify({"message": f"Weight entry {id} deleted"})
 
 @app.route('/api/weight-management/<int:id>', methods=['PUT'])
-@cross_origin()
 def updateWeightLog(id):
     data = request.get_json()
     weightDAO.updateWeightEntry(id, data)

@@ -36,7 +36,7 @@ https://github.com/Ange-Dvs/wsaa-project.git
 5. Initiate the pull of the GitHub repository
 ``git pull``
 
-6. If the pull has been successful, you should see 6 files pulled from GitHub. The ``readme.md``, the ``.gitignore`` file, the XXX files contained within.
+6. If the pull has been successful, you should see folders (``dao``, ``docs``, ``html`` and ``sql_setup``) and files (``.gitignore``, ``dbconfig.py``, ``readme.md``, ``requirements.txt`` and ``server.py``).
 
 ### Running the project
 1. Ensure Python and necessary libraries are installed

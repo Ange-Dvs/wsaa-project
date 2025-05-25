@@ -191,6 +191,7 @@ Within the assignments various libraries are used including:
 - ``Bootstrap 4``
 - Built-in/Standard library
 - Pythonanywhere
+- AI Tools
 
 <font size="4"><b>Flask</b></font>   
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Flask is a lightweight WSGI web application framework used to build the backend REST API for handling requests related to users, workouts, and weight logs. It also serves static HTML pages. Used in `server.py`
@@ -282,6 +283,22 @@ Within the **Code** section of the "Web" tab, validate that the directory is set
 
 7. Reload the app:  
 Click the "Reload" option at the top of the page, the site will then be live with the desired configuration. 
+
+<font size="4"><b>AI Tools</b></font>   
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Some aspects of this project, have been developed with the use of artificial intelligence (AI), such as ChatGPT. The purpose of incorporating AI was to enhance activities related to brainstorming, information finding, troubleshooting and generation of test data.
+
+<u> Example of prompts used:</u>
+
+**Brainstorming**  
+- Suggest layout ideas to make a workout log web app look cleaner using Bootstrap 4.
+- How do I add a cancel button next to the update button using Bootstrap?
+
+**Troubleshooting**  
+- My app works locally but fails on PythonAnywhere — what should I check?
+- Why isn’t my HTML form autofilling values on update?
+
+**Testing**
+- Provide an SQL file to insert sample data into the users, workouts, weight_management
 
 ***
 End 

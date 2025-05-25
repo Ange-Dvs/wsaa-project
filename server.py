@@ -48,8 +48,6 @@ def createUser():
         "lastName": request.json['lastName'],
         "age": request.json['age'],
         "goal": request.json['goal'],
-        "startingBodyWeight": request.json['startingBodyWeight'],
-        "currentBodyWeight": request.json['currentBodyWeight'],
     }
     addeduser = usersDAO.createUser(user)
     
@@ -65,16 +63,6 @@ def update(userID):
     reqJson = request.json
     if 'age' in reqJson and type(reqJson['age']) is not int:
         abort(400, description = "Age must be a whole number")
-    if 'startingBodyWeight' in reqJson:
-        try:
-            float(reqJson['startingBodyWeight'])
-        except (ValueError, TypeError):
-            abort(400, description="startingBodyWeight must be a number")
-    if 'currentBodyWeight' in reqJson:
-        try:
-            float(reqJson['currentBodyWeight'])
-        except (ValueError, TypeError):
-            abort(400, description="currentBodyWeight must be a number")
 
     if 'firstName' in reqJson:
         foundUser['firstName'] = reqJson['firstName']
@@ -84,10 +72,7 @@ def update(userID):
         foundUser['age'] = reqJson['age']
     if 'goal' in reqJson:
         foundUser['goal'] = reqJson['goal']
-    if 'startingBodyWeight' in reqJson:
-        foundUser['startingBodyWeight'] = reqJson['startingBodyWeight']
-    if 'currentBodyWeight' in reqJson:
-        foundUser['currentBodyWeight'] = reqJson['currentBodyWeight']
+        
     usersDAO.update(userID,foundUser)
     return jsonify(foundUser)
 

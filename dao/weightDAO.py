@@ -58,7 +58,8 @@ class WeightDAO:
         self.cursor = self.getcursor()
         sql = """
             UPDATE weight_management
-            SET userID=%s, currentWeightLogDate=%s, currentBodyWeight=%s, targetBodyWeight=%s, startingBodyWeight=%s
+            SET userID=%s, currentWeightLogDate=%s, currentBodyWeight=%s, 
+                targetBodyWeight=%s, startingBodyWeight=%s
             WHERE id=%s
         """
         values = (

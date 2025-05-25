@@ -1,334 +1,353 @@
-<html>
-    <head>
-        <title> view Users</title>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-       
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-        
-        <style>
-            .scrollable-table {
-                max-height: calc(100vh - 250px);
-                overflow: auto;
-            }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title> view Users</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <style>
+        .scrollable-table {
+        max-height: calc(100vh - 250px);
+        overflow: auto;
+        }
 
-            #userTable {
-                min-width: 1000px;
-                width: 100%;
-                border-collapse: collapse;
-            }
+        #userTable {
+            min-width: 1000px;
+            width: 100%;
+            border-collapse: collapse;
+        }
 
-            #userTable thead th {
-                position: sticky;
-                top: 0;
-                z-index: 2;
-                white-space: nowrap;
-                padding-left: 8px;
-                padding-right: 0px;
-            }
+        #userTable thead th {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        white-space: nowrap;
+        padding-left: 8px;
+        padding-right: 0px;
+        }
 
-            #userTable th,
-            #userTable td {
-                white-space: nowrap;
-            }
-        </style>
-    </head>
-    <body class="bg-light">
+        #userTable th,
+        #userTable td {
+        white-space: nowrap;
+        }
+    </style>
+</head>
+<body class="bg-light">
     <div class="container mt-5">
-    <label for="nameFilter">Search by Surname:</label>
-    <input type="text" id="nameFilter" placeholder="e.g. O'Brien" onkeyup="filterByLastName()">
-    <p id="nameNotFoundWarning" style="color: red; display: none;">No users found for that surname.</p>
+        <label for="nameFilter">Search by Surname:</label>
+        <input type="text" id="nameFilter" placeholder="e.g. O'Brien" onkeyup="filterByLastName()">
+        <p id="nameNotFoundWarning" style="color: red; display: none;">No users found for that surname.</p>
 
     
-    <div class="mb-3">
-        <a href="/" class="btn btn-secondary">⬅️ Back to Home</a>
-    </div>
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="text-primary mb-0">👤 User Manager</h1>
-        <div id="showCreateButton">
-            <button class="btn btn-success" onclick="showCreate()">➕ Add New User</button>
+        <div class="mb-3">
+            <a href="/" class="btn btn-secondary">⬅️ Back to Home</a>
+        </div>
+    
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="text-primary mb-0">👤 User Manager</h1>
+            <div id="showCreateButton">
+                <button class="btn btn-success" onclick="showCreate()">➕ Add New User</button>
+            </div>
         </div>
     </div>
-        </div>
         
-        <div id="createUpdateForm" class="card p-4 mb-4" style="display: none;">
-            <h4 class="card-title">
-                <span id="createLabel">Create a User</span>
-                <span id="updateLabel">Update a User</span>
-            </h4>
-            <input type="hidden" name="userID" />
-            <div class="form-group">
-                <label>First Name</label>
-                <input type="text" class="form-control" name="firstName" />
-            </div>
-            <div class="form-group">
-                <label>Last Name</label>
-                <input type="text" class="form-control" name="lastName" />
-            </div>
-            <div class="form-group">
-                <label>Age</label>
-                <input type="number" class="form-control" name="age" />
-            </div>
-            <div class="form-group">
-                <label>Goal</label>
-                <input type="text" class="form-control" name="goal" />
-            </div>
+    <div id="createUpdateForm" class="card p-4 mb-4" style="display: none;">
+        <h4 class="card-title">
+            <span id="createLabel">Create a User</span>
+            <span id="updateLabel">Update a User</span>
+        </h4>
+        <input type="hidden" name="userID" />
+        <div class="form-group">
+            <label>First Name</label>
+            <input type="text" class="form-control" name="firstName" />
+        </div>
+        <div class="form-group">
+            <label>Last Name</label>
+            <input type="text" class="form-control" name="lastName" />
+        </div>
+        <div class="form-group">
+            <label>Age</label>
+            <input type="number" class="form-control" name="age" />
+        </div>
+        <div class="form-group">
+            <label>Goal</label>
+            <input type="text" class="form-control" name="goal" />
+        </div>
         <button id="doCreateButton" class="btn btn-primary" onclick="doCreate()">Create</button>
-        <button id="doUpdateButton" class="btn btn-warning" onclick="doUpdate()">Update</button>
+        <div id="updateButtons" class="d-flex mt-2" style="display: none;">
+            <button id="doUpdateButton" class="btn btn-warning" onclick="doUpdateWorkout()">Update</button>
+            <button id="cancelButton" class="btn btn-secondary" onclick="cancelEdit()" type="button" style="margin-left: 0.5rem;">Cancel</button>
         </div>
+    </div>
         
-        <div class="scrollable-table mx-auto" style="max-width: 1100px;">
-            <table class="table table-bordered table-striped bg-white mb-0" id="userTable" style="min-width: 1000px;">
-                <thead class="thead-dark">
-                    <tr>
-                        <th>User ID</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Age</th>
-                        <th>Goal</th>
-                        <th></th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
+    <div class="scrollable-table mx-auto" style="max-width: 1100px;">
+        <table class="table table-bordered table-striped bg-white mb-0" id="userTable" style="min-width: 1000px;">
+            <thead class="thead-dark">
+                <tr>
+                    <th>User ID</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Age</th>
+                    <th>Goal</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
                 <!-- Rows will be dynamically inserted here -->
-                </tbody>
-            </table>
-        </div>
-    </body>
+            </tbody>
+        </table>
+    </div>
+
     <script>
-    function showCreate(){
-        document.getElementById('showCreateButton').style.display="none"
-        document.getElementById('userTable').style.display="table"
-        document.getElementById('createUpdateForm').style.display="block"
-
-        document.getElementById('createLabel').style.display="inline"
-        document.getElementById('updateLabel').style.display="none"
-
-        document.getElementById('doCreateButton').style.display="block"
-        document.getElementById('doUpdateButton').style.display="none"
-
-    }
-    function showViewAll(){
-        document.getElementById('showCreateButton').style.display="block"
-        document.getElementById('userTable').style.display="table"
-        document.getElementById('createUpdateForm').style.display="none"
-    }
-    function showUpdate(buttonElement){
-        document.getElementById('showCreateButton').style.display="none"
-        document.getElementById('userTable').style.display="table"
-        document.getElementById('createUpdateForm').style.display="block"
-
-        document.getElementById('createLabel').style.display="none"
-        document.getElementById('updateLabel').style.display="inline"
-
-        document.getElementById('doCreateButton').style.display="none"
-        document.getElementById('doUpdateButton').style.display="block"
-
-
-        var rowElement = buttonElement.parentNode.parentNode
+        function showCreate(){
+            document.getElementById('showCreateButton').style.display="none"
+            document.getElementById('userTable').style.display="table"
+            document.getElementById('createUpdateForm').style.display="block"
         
-        var user = getUserFromRow(rowElement)
-        populateFormWithUser(user)
-    }
-    function doCreate(){
-        var form = document.getElementById('createUpdateForm')
-
-        var user = {}
-       
-        user.firstName = form.querySelector('input[name="firstName"]').value
-        user.lastName = form.querySelector('input[name="lastName"]').value
-        user.age = form.querySelector('input[name="age"]').value
-        user.goal = form.querySelector('input[name="goal"]').value
-
-        console.log(JSON.stringify(user))
-        createUserAjax(user)
-       
-    }
-    function doUpdate(){
-        var user = getUserFromForm();
-        var rowElement = document.getElementById(user.userID);
-        updateUserAjax(user);
-        setUserInRow(rowElement,user);
-       
-        clearForm();
-        showViewAll();
-    }
-    function doDelete(r){
-        var tableElement = document.getElementById('userTable');
-        var rowElement = r.parentNode.parentNode;
-        var index = rowElement.rowIndex;
-        deleteUserAjax(rowElement.getAttribute("id"));
-        tableElement.deleteRow(index);
-    }
-    function addUserToTable(user){
-        var tableElement = document.getElementById('userTable').getElementsByTagName('tbody')[0];
-        var rowElement = tableElement.insertRow(-1);
-        rowElement.setAttribute("id", user.userID);
-        var cell1 = rowElement.insertCell(0);
-        cell1.innerHTML = user.userID;
-        cell1.classList.add("text-center");
-        var cell2 = rowElement.insertCell(1);
-        cell2.innerHTML = user.firstName;
-        var cell3 = rowElement.insertCell(2);
-        cell3.innerHTML = user.lastName;
-        var cell4 = rowElement.insertCell(3);
-        cell4.innerHTML = user.age;
-        cell4.classList.add("text-center");
-        var cell5 = rowElement.insertCell(4);
-        cell5.innerHTML = user.goal;
-        var cell6 = rowElement.insertCell(5);
-        cell6.innerHTML = '<button class="btn btn-warning btn-sm" onclick="showUpdate(this)">Update</button>';
-        cell6.classList.add("text-center");
-        var cell7 = rowElement.insertCell(6);
-        cell7.innerHTML = '<button class="btn btn-danger btn-sm" onclick="doDelete(this)">Delete</button>';
-        cell7.classList.add("text-center");
-
-    }
-
-    function clearForm(){
-        var form = document.getElementById('createUpdateForm')
-
-        form.querySelector('input[name="firstName"]').value=''
-        form.querySelector('input[name="lastName"]').value=''
-        form.querySelector('input[name="age"]').value=''
-        form.querySelector('input[name="goal"]').value=''
-    }
-    function getUserFromRow(rowElement){
-        var user ={}
-        user.userID  = rowElement.getAttribute("id")
-        user.firstName = rowElement.cells[1].firstChild.textContent
-        user.lastName = rowElement.cells[2].firstChild.textContent
-        user.age = parseInt(rowElement.cells[3].firstChild.textContent,10)
-        user.goal = rowElement.cells[4].firstChild.textContent
-
-        return user
-    }
-    function setUserInRow(rowElement, user){
-        rowElement.cells[0].firstChild.textContent= user.userID  
-        rowElement.cells[1].firstChild.textContent= user.firstName 
-        rowElement.cells[2].firstChild.textContent= user.lastName
-        rowElement.cells[3].firstChild.textContent= user.age
-        rowElement.cells[4].firstChild.textContent= user.goal  
-    }
-    function populateFormWithUser(user){
-        var form = document.getElementById('createUpdateForm')
-        form.querySelector('input[name="userID"]').disabled = true
-
-        form.querySelector('input[name="userID"]').value  = user.userID  
-        form.querySelector('input[name="firstName"]').value= user.firstName 
-        form.querySelector('input[name="lastName"]').value= user.lastName
-        form.querySelector('input[name="age"]').value= user.age
-        form.querySelector('input[name="goal"]').value  = user.goal  
-        return user
-    }
-    function getUserFromForm(){
-        var form = document.getElementById('createUpdateForm')
-        var user = {}
-        user.userID = form.querySelector('input[name="userID"]').value
-        user.firstName = form.querySelector('input[name="firstName"]').value
-        user.lastName = form.querySelector('input[name="lastName"]').value
-        user.age = parseInt(form.querySelector('input[name="age"]').value,10)
-        user.goal = form.querySelector('input[name="goal"]').value  
+            document.getElementById('createLabel').style.display="inline"
+            document.getElementById('updateLabel').style.display="none"
         
-        console.log(JSON.stringify(user))
-        return user
-    }
-
-    function fetchAllUsers(){
-        $.ajax({
-            "url": "/api/users",
-            "method":"GET",
-            "data":"",
-            "dataType": "JSON",
-            "success":function(result){
-                for (user of result){
-                    addUserToTable(user);
+            document.getElementById('doCreateButton').style.display="block"
+            document.getElementById('doUpdateButton').style.display="none"
+        
+        }
+    
+        function showViewAll(){
+            document.getElementById('showCreateButton').style.display="block"
+            document.getElementById('userTable').style.display="table"
+            document.getElementById('createUpdateForm').style.display="none"
+        }
+    
+        function showUpdate(buttonElement){
+            document.getElementById('showCreateButton').style.display="none"
+            document.getElementById('userTable').style.display="table"
+            document.getElementById('createUpdateForm').style.display="block"
+        
+            document.getElementById('createLabel').style.display="none"
+            document.getElementById('updateLabel').style.display="inline"
+        
+            document.getElementById('doCreateButton').style.display="none"
+            document.getElementById('doUpdateButton').style.display="block"
+        
+        
+            var rowElement = buttonElement.parentNode.parentNode
+            var user = getUserFromRow(rowElement)
+            populateFormWithUser(user)
+        }
+    
+        function cancelEdit() {
+            clearForm();
+            showViewAll(); // hides the form and shows the table again
+            document.getElementById('createLabel').style.display = "inline";
+            document.getElementById('updateLabel').style.display = "none";
+            document.getElementById('doCreateButton').style.display = "block";
+            document.getElementById('updateButtons').style.display = "none";
+        }
+    
+        function doCreate(){
+            var form = document.getElementById('createUpdateForm')
+            var user = {}
+        
+            user.firstName = form.querySelector('input[name="firstName"]').value
+            user.lastName = form.querySelector('input[name="lastName"]').value
+            user.age = form.querySelector('input[name="age"]').value
+            user.goal = form.querySelector('input[name="goal"]').value
+        
+            console.log(JSON.stringify(user))
+            createUserAjax(user)
+        
+        }
+        function doUpdate(){
+            var user = getUserFromForm();
+            var rowElement = document.getElementById(user.userID);
+            updateUserAjax(user);
+            setUserInRow(rowElement,user);
+        
+            clearForm();
+            showViewAll();
+        }
+    
+        function doDelete(r){
+            var tableElement = document.getElementById('userTable');
+            var rowElement = r.parentNode.parentNode;
+            var index = rowElement.rowIndex;
+            deleteUserAjax(rowElement.getAttribute("id"));
+            tableElement.deleteRow(index);
+        }
+    
+        function addUserToTable(user){
+            var tableElement = document.getElementById('userTable').getElementsByTagName('tbody')[0];
+            var rowElement = tableElement.insertRow(-1);
+            rowElement.setAttribute("id", user.userID);
+            var cell1 = rowElement.insertCell(0);
+            cell1.innerHTML = user.userID;
+            cell1.classList.add("text-center");
+            var cell2 = rowElement.insertCell(1);
+            cell2.innerHTML = user.firstName;
+            var cell3 = rowElement.insertCell(2);
+            cell3.innerHTML = user.lastName;
+            var cell4 = rowElement.insertCell(3);
+            cell4.innerHTML = user.age;
+            cell4.classList.add("text-center");
+            var cell5 = rowElement.insertCell(4);
+            cell5.innerHTML = user.goal;
+            var cell6 = rowElement.insertCell(5);
+            cell6.innerHTML = '<button class="btn btn-warning btn-sm" onclick="showUpdate(this)">Update</button>';
+            cell6.classList.add("text-center");
+            var cell7 = rowElement.insertCell(6);
+            cell7.innerHTML = '<button class="btn btn-danger btn-sm" onclick="doDelete(this)">Delete</button>';
+            cell7.classList.add("text-center");
+        }
+    
+        function clearForm(){
+            var form = document.getElementById('createUpdateForm')
+        
+            form.querySelector('input[name="firstName"]').value=''
+            form.querySelector('input[name="lastName"]').value=''
+            form.querySelector('input[name="age"]').value=''
+            form.querySelector('input[name="goal"]').value=''
+        }
+        function getUserFromRow(rowElement){
+            var user ={}
+            user.userID  = rowElement.getAttribute("id")
+            user.firstName = rowElement.cells[1].firstChild.textContent
+            user.lastName = rowElement.cells[2].firstChild.textContent
+            user.age = parseInt(rowElement.cells[3].firstChild.textContent,10)
+            user.goal = rowElement.cells[4].firstChild.textContent
+        
+            return user
+        }
+        function setUserInRow(rowElement, user){
+            rowElement.cells[0].firstChild.textContent= user.userID  
+            rowElement.cells[1].firstChild.textContent= user.firstName 
+            rowElement.cells[2].firstChild.textContent= user.lastName
+            rowElement.cells[3].firstChild.textContent= user.age
+            rowElement.cells[4].firstChild.textContent= user.goal  
+        }
+    
+        function populateFormWithUser(user){
+            var form = document.getElementById('createUpdateForm')
+            form.querySelector('input[name="userID"]').disabled = true
+        
+            form.querySelector('input[name="userID"]').value  = user.userID  
+            form.querySelector('input[name="firstName"]').value= user.firstName 
+            form.querySelector('input[name="lastName"]').value= user.lastName
+            form.querySelector('input[name="age"]').value= user.age
+            form.querySelector('input[name="goal"]').value  = user.goal  
+            return user
+        }
+    
+        function getUserFromForm(){
+            var form = document.getElementById('createUpdateForm')
+            var user = {}
+            user.userID = form.querySelector('input[name="userID"]').value
+            user.firstName = form.querySelector('input[name="firstName"]').value
+            user.lastName = form.querySelector('input[name="lastName"]').value
+            user.age = parseInt(form.querySelector('input[name="age"]').value,10)
+            user.goal = form.querySelector('input[name="goal"]').value  
+        
+            console.log(JSON.stringify(user))
+            return user
+        }
+    
+        function fetchAllUsers(){
+            $.ajax({
+                "url": "/api/users",
+                "method":"GET",
+                "data":"",
+                "dataType": "JSON",
+                "success":function(result){
+                    for (user of result){
+                        addUserToTable(user);
+                    }
+                },
+                "error":function(xhr,status,error){
+                    console.log("error: "+status+" msg:"+error);
                 }
-                
-            },
-            "error":function(xhr,status,error){
-                console.log("error: "+status+" msg:"+error);
-            }
-        });
-
-    }
-    function createUserAjax(user){
-        console.log(JSON.stringify(user));
-        $.ajax({
-            "url": "/api/users",
-            "method":"POST",
-            "data":JSON.stringify(user),
-            "dataType": "JSON",
-            contentType: "application/json; charset=utf-8",
-            "success":function(result){
-                user.userID = result.userID
-                addUserToTable(user)
-                clearForm()
-                showViewAll()
-            },
-            "error":function(xhr,status,error){
-                console.log("error: "+status+" msg:"+error);
-            }
-        });
-    }
-    function updateUserAjax(user){
-        console.log(JSON.stringify(user));
-        $.ajax({
-            "url": "/api/users/"+encodeURI(user.userID),
-            "method":"PUT",
-            "data":JSON.stringify(user),
-            "dataType": "JSON",
-            contentType: "application/json; charset=utf-8",
-            "success":function(result){
-            },
-            "error":function(xhr,status,error){
-                console.log("error: "+status+" msg:"+error);
-            }
-        });
-    }
-    function deleteUserAjax(userID){
-        $.ajax({
-            "url": "/api/users/"+encodeURI(userID),
-            "method":"DELETE",
-            "data":"",
-            "dataType": "JSON",
-            contentType: "application/json; charset=utf-8",
-            "success":function(result){                  
-            },
-            "error":function(xhr,status,error){
-                console.log("error: "+status+" msg:"+error);
-            }
-        });
-    }
-
+            });
+        }
+    
+        function createUserAjax(user){
+            console.log(JSON.stringify(user));
+            $.ajax({
+                "url": "/api/users",
+                "method":"POST",
+                "data":JSON.stringify(user),
+                "dataType": "JSON",
+                contentType: "application/json; charset=utf-8",
+                "success":function(result){
+                    user.userID = result.userID
+                    addUserToTable(user)
+                    clearForm()
+                    showViewAll()
+                },
+                "error":function(xhr,status,error){
+                    console.log("error: "+status+" msg:"+error);
+                }
+            });
+        }
+    
+        function updateUserAjax(user){
+            console.log(JSON.stringify(user));
+            $.ajax({
+                "url": "/api/users/"+encodeURI(user.userID),
+                "method":"PUT",
+                "data":JSON.stringify(user),
+                "dataType": "JSON",
+                contentType: "application/json; charset=utf-8",
+                "success":function(result){
+                },
+                "error":function(xhr,status,error){
+                    console.log("error: "+status+" msg:"+error);
+                }
+            });
+        }
+    
+        function deleteUserAjax(userID){
+            $.ajax({
+                "url": "/api/users/"+encodeURI(userID),
+                "method":"DELETE",
+                "data":"",
+                "dataType": "JSON",
+                contentType: "application/json; charset=utf-8",
+                "success":function(result){                  
+                },
+                "error":function(xhr,status,error){
+                    console.log("error: "+status+" msg:"+error);
+                }
+            });
+        }
+    
         function filterByLastName() {
-        const input = document.getElementById("nameFilter").value.trim().toLowerCase();
-        const warningNotFound = document.getElementById("nameNotFoundWarning");
-        const table = document.getElementById("userTable");
-        const tbody = table.getElementsByTagName("tbody")[0];
-        const rows = table.getElementsByTagName("tr");
-
-        warningNotFound.style.display = "none";
-
-        let foundMatch = false;
-        for (let i = 1; i < rows.length; i++) {
-            const lastNameCell  = rows[i].getElementsByTagName("td")[2];
-            if (lastNameCell ) {
-                const txtValue = lastNameCell .textContent || lastNameCell .innerText;
-                const showRow = (input === "" || txtValue.trim().toLowerCase().includes(input));
-                rows[i].style.display = showRow ? "" : "none";
-                if (showRow) foundMatch = true;
+            const input = document.getElementById("nameFilter").value.trim().toLowerCase();
+            const warningNotFound = document.getElementById("nameNotFoundWarning");
+            const table = document.getElementById("userTable");
+            const tbody = table.getElementsByTagName("tbody")[0];
+            const rows = table.getElementsByTagName("tr");
+        
+            warningNotFound.style.display = "none";
+        
+            let foundMatch = false;
+        
+            for (let i = 1; i < rows.length; i++) {
+                const lastNameCell  = rows[i].getElementsByTagName("td")[2];
+                if (lastNameCell ) {
+                    const txtValue = lastNameCell .textContent || lastNameCell .innerText;
+                    const showRow = (input === "" || txtValue.trim().toLowerCase().includes(input));
+                    rows[i].style.display = showRow ? "" : "none";
+                    if (showRow) foundMatch = true;
+                }
+            }
+        
+            if (input !== "" && !foundMatch) {
+                warningNotFound.style.display = "block";
             }
         }
-
-        if (input !== "" && !foundMatch) {
-            warningNotFound.style.display = "block";
-        }
-    }
-
-    $(document).ready(function () {
-        fetchAllUsers();
-    });
-      
+    
+        $(document).ready(function () {
+            fetchAllUsers();
+        });
+        
     </script>
+</body>
 </html>

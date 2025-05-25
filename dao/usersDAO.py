@@ -2,6 +2,7 @@
 
 import mysql.connector
 import dbconfig as cfg
+
 class UsersDAO:
     connection=""
     cursor =''
@@ -58,21 +59,39 @@ class UsersDAO:
     def createUser(self, user):
         cursor = self.getcursor()
         sql="insert into users (firstName, lastName, age, goal, startingBodyWeight, currentBodyWeight) values (%s,%s,%s,%s,%s,%s)"
-        values = (user.get("firstName"), user.get("lastName"), user.get("age"), user.get("goal"), user.get("startingBodyWeight"), user.get("currentBodyWeight"))
+        values = (
+            user.get("firstName"), 
+            user.get("lastName"), 
+            user.get("age"), 
+            user.get("goal"), 
+            user.get("startingBodyWeight"), 
+            user.get("currentBodyWeight")
+        )
         cursor.execute(sql, values)
-
         self.connection.commit()
         newid = cursor.lastrowid
         user["userID"] = newid
         self.closeAll()
         return user
 
-
     def update(self, userID, user):
         cursor = self.getcursor()
-        sql="update users set firstName= %s,lastName=%s, age=%s, goal=%s, startingBodyWeight=%s, currentBodyWeight=%s  where userID = %s"
+        sql="""
+            update users 
+            set firstName= %s,lastName=%s, age=%s, goal=%s, 
+                startingBodyWeight=%s, currentBodyWeight=%s  
+            where userID = %s
+        """
         print(f"update users {user}")
-        values = (user.get("firstName"), user.get("lastName"), user.get("age"), user.get("goal"), user.get("startingBodyWeight"), user.get("currentBodyWeight"), userID)
+        values = (
+            user.get("firstName"), 
+            user.get("lastName"), 
+            user.get("age"), 
+            user.get("goal"), 
+            user.get("startingBodyWeight"), 
+            user.get("currentBodyWeight"), 
+            userID
+        )
         cursor.execute(sql, values)
         self.connection.commit()
         self.closeAll()
@@ -81,12 +100,9 @@ class UsersDAO:
         cursor = self.getcursor()
         sql="delete from users where userID = %s"
         values = (userID,)
-
         cursor.execute(sql, values)
-
         self.connection.commit()
-        self.closeAll()
-        
+        self.closeAll()     
         print("delete done")
 
     def convertToDictionary(self, resultLine):
@@ -102,20 +118,20 @@ class UsersDAO:
         cursor = self.getcursor(dictionary=True)
 
         sql = """
-        SELECT 
-            COUNT(*) AS total_users,
-            ROUND(AVG(age)) AS avg_age
-        FROM users
+            SELECT 
+                COUNT(*) AS total_users,
+                ROUND(AVG(age)) AS avg_age
+            FROM users
         """
         cursor.execute(sql)
         summary = cursor.fetchone()
 
         sql_top_goals = """
-        SELECT goal
-        FROM users
-        GROUP BY goal
-        ORDER BY COUNT(*) DESC
-        LIMIT 3
+            SELECT goal
+            FROM users
+            GROUP BY goal
+            ORDER BY COUNT(*) DESC
+            LIMIT 3
         """
         cursor.execute(sql_top_goals)
         top_goals = [row["goal"] for row in cursor.fetchall()]

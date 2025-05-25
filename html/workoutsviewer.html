@@ -1,402 +1,404 @@
-<html>
-    <head>
-        <title> view Workouts</title>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-       
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title> view Workouts</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
-        <style>
-            .scrollable-table {
-                max-height: calc(100vh - 250px);
-                overflow: auto;
-            }
+    <style>
+        .scrollable-table {
+            max-height: calc(100vh - 250px);
+            overflow: auto;
+        }
 
-            #workoutTable {
-                min-width: 1000px;
-                width: 100%;
-                border-collapse: collapse;
-            }
+        #workoutTable {
+            min-width: 1000px;
+            width: 100%;
+            border-collapse: collapse;
+        }
 
-            #workoutTable thead th {
-                position: sticky;
-                top: 0;
-                z-index: 2;
-                white-space: nowrap;
-                padding-left: 8px;
-                padding-right: 0px;
-            }
+        #workoutTable thead th {
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            white-space: nowrap;
+            padding-left: 8px;
+            padding-right: 0px;
+        }
 
-            #workoutTable th,
-            #workoutTable td {
-                white-space: nowrap;
-            }
-        </style>
+        #workoutTable th,
+        #workoutTable td {
+            white-space: nowrap;
+        }
+    </style>
+</head>
 
-    </head>
-    <body class="bg-light">
+<body class="bg-light">
     <div class="container mt-5">
-    <label for="userFilter">Search by User ID:</label>
-    <input type="text" id="userFilter" placeholder="e.g. 123" onkeyup="filterByUser()">
-    <p id="userFilterWarning" style="color: red; display: none;">Please enter a valid number for the User ID.</p>
-    <p id="userNotFoundWarning" style="color: red; display: none;">No workouts found for that User ID.</p>
+        <label for="userFilter">Search by User ID:</label>
+        <input type="text" id="userFilter" placeholder="e.g. 123" onkeyup="filterByUser()">
+        <p id="userFilterWarning" style="color: red; display: none;">Please enter a valid number for the User ID.</p>
+        <p id="userNotFoundWarning" style="color: red; display: none;">No workouts found for that User ID.</p>
 
+        <div class="mb-3">
+            <a href="/" class="btn btn-secondary">⬅️ Back to Home</a>
+        </div>
 
-    <div class="mb-3">
-        <a href="/" class="btn btn-secondary">⬅️ Back to Home</a>
-    </div>
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="text-primary mb-0">📋 Workout Logs</h1>
-        <div id="showCreateButton">
-            <button class="btn btn-success" onclick="showCreate()">➕ Add New Workout</button>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="text-primary mb-0">📋 Workout Logs</h1>
+            <div id="showCreateButton">
+                <button class="btn btn-success" onclick="showCreate()">➕ Add New Workout</button>
+            </div>
         </div>
     </div>
-        </div>
         
-        <div id="createUpdateForm" class="card p-4 mb-4" style="display: none;">
-            <h4 class="card-title">
-                <span id="createLabel">Create a Workout</span>
-                <span id="updateLabel">Update a Workout</span>
-            </h4>
-            <input type="hidden" name="workoutID" />
-            <div class="form-group">
-                <label>User ID</label>
-                <input type="text" class="form-control" name="userID" />
-            </div>
-            <div class="form-group">
-                <label>Workout Date</label>
-                <input type="date" class="form-control" name="workout_date" />
-            </div>
-            <div class="form-group">
-                <label>Session Type</label>
-                <input type="text" class="form-control" name="sessionType" />
-            </div>
-            <div class="form-group">
-                <label>Location</label>
-                <input type="text" class="form-control" name="location" />
-            </div>
-            <div class="form-group">
-                <label>Duration in Minutes</label>
-                <input type="number" class="form-control" name="durationMinutes" />
-            </div>
-            <div class="form-group">
-                <label>Difficulty</label>
-                <input type="text" class="form-control" name="difficulty"/>
-            </div>
-            <div class="form-group">
-                <label>Rating</label>
-                <input type="number" class="form-control" name="rating" step="any" />
-            </div>
+    <div id="createUpdateForm" class="card p-4 mb-4" style="display: none;">
+        <h4 class="card-title">
+            <span id="createLabel">Create a Workout</span>
+            <span id="updateLabel">Update a Workout</span>
+        </h4>
+        <input type="hidden" name="workoutID" />
+        <div class="form-group">
+            <label>User ID</label>
+            <input type="text" class="form-control" name="userID" />
+        </div>
+        <div class="form-group">
+            <label>Workout Date</label>
+            <input type="date" class="form-control" name="workout_date" />
+        </div>
+        <div class="form-group">
+            <label>Session Type</label>
+            <input type="text" class="form-control" name="sessionType" />
+        </div>
+        <div class="form-group">
+            <label>Location</label>
+            <input type="text" class="form-control" name="location" />
+        </div>
+        <div class="form-group">
+            <label>Duration in Minutes</label>
+            <input type="number" class="form-control" name="durationMinutes" />
+        </div>
+        <div class="form-group">
+            <label>Difficulty</label>
+            <input type="text" class="form-control" name="difficulty"/>
+        </div>
+        <div class="form-group">
+            <label>Rating</label>
+            <input type="number" class="form-control" name="rating" step="any" />
+        </div>
+
         <button id="doCreateButton" class="btn btn-primary" onclick="doCreateWorkout()">Create</button>
         <div id="updateButtons" class="d-flex mt-2" style="display: none;">
             <button id="doUpdateButton" class="btn btn-warning" onclick="doUpdateWorkout()">Update</button>
             <button id="cancelButton" class="btn btn-secondary" onclick="cancelEdit()" type="button" style="margin-left: 0.5rem;">Cancel</button>
         </div>
-
-        </div>
+    </div>
         
-        <div class="scrollable-table mx-auto" style="max-width: 1100px;">
-            <table class="table table-bordered table-striped bg-white mb-0" id="workoutTable" style="min-width: 1000px;">
-                <thead class="thead-dark">
-                    <tr>
-                        <th>Workout ID</th>
-                        <th>User ID</th>
-                        <th>Workout Date</th>
-                        <th>Session Type</th>
-                        <th>Location</th>
-                        <th>Duration in Mins</th>
-                        <th>Difficulty</th>
-                        <th>Rating</th>
-                        <th></th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
+    <div class="scrollable-table mx-auto" style="max-width: 1100px;">
+        <table class="table table-bordered table-striped bg-white mb-0" id="workoutTable" style="min-width: 1000px;">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Workout ID</th>
+                    <th>User ID</th>
+                    <th>Workout Date</th>
+                    <th>Session Type</th>
+                    <th>Location</th>
+                    <th>Duration in Mins</th>
+                    <th>Difficulty</th>
+                    <th>Rating</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
                 <!-- Rows will be dynamically inserted here -->
-                </tbody>
-            </table>
-        </div>
-    </body>
+            </tbody>
+        </table>
+    </div>
+
     <script>
-    function showCreate(){
-        document.getElementById('showCreateButton').style.display="none"
-        document.getElementById('workoutTable').style.display="table"
-        document.getElementById('createUpdateForm').style.display="block"
-
-        document.getElementById('createLabel').style.display="inline"
-        document.getElementById('updateLabel').style.display="none"
-
-        document.getElementById('doCreateButton').style.display="block"
-        document.getElementById('updateButtons').style.display="none"
-
-    }
-    function showViewAll(){
-        document.getElementById('showCreateButton').style.display="block"
-        document.getElementById('workoutTable').style.display="table"
-        document.getElementById('createUpdateForm').style.display="none"
-    }
-    function showUpdate(buttonElement){
-        document.getElementById('showCreateButton').style.display="none"
-        document.getElementById('workoutTable').style.display="table"
-        document.getElementById('createUpdateForm').style.display="block"
-
-        document.getElementById('createLabel').style.display="none"
-        document.getElementById('updateLabel').style.display="inline"
-
-        document.getElementById('doCreateButton').style.display="none"
-        document.getElementById('updateButtons').style.display="flex"
-
-
-        var rowElement = buttonElement.parentNode.parentNode
-        // these is a way of finding the closest <tr> which would safer, closest()
+        function showCreate(){
+            document.getElementById('showCreateButton').style.display="none"
+            document.getElementById('workoutTable').style.display="table"
+            document.getElementById('createUpdateForm').style.display="block"
         
-        var workout = getWorkoutFromRow(rowElement)
-        populateFormWithWorkout(workout)
-    }
-    function doCreateWorkout(){
-        var form = document.getElementById('createUpdateForm')
-
-        var workout = {}
-       
-        workout.userID = form.querySelector('input[name="userID"]').value
-        workout.sessionType = form.querySelector('input[name="sessionType"]').value
-        workout.location = form.querySelector('input[name="location"]').value
-        workout.durationMinutes = form.querySelector('input[name="durationMinutes"]').value
-        workout.difficulty = form.querySelector('input[name="difficulty"]').value
-        workout.rating = form.querySelector('input[name="rating"]').value
-
-        console.log(JSON.stringify(workout))
-        createWorkoutsAjax(workout)
-       
-    }
-    function doUpdateWorkout(){
-        var workout = getWorkoutFromForm();
-        var rowElement = document.getElementById(workout.workoutID);
-        updateWorkoutAjax(workout);
-        setWorkoutInRow(rowElement,workout);
-       
-        clearForm();
-        showViewAll();
-    }
-    function doDelete(r){
-        var tableElement = document.getElementById('workoutTable');
-        var rowElement = r.parentNode.parentNode;
-        var index = rowElement.rowIndex;
-        deleteWorkoutAjax(rowElement.getAttribute("id"));
-        tableElement.deleteRow(index);
-    }
-    function addWorkoutToTable(workout){
-        var tableElement = document.getElementById('workoutTable').getElementsByTagName('tbody')[0];
-        var rowElement = tableElement.insertRow(-1);
-        rowElement.setAttribute("id", workout.workoutID);
-        var cell1 = rowElement.insertCell(0);
-        cell1.innerHTML = workout.workoutID;
-        cell1.classList.add("text-center");
-        var cell2 = rowElement.insertCell(1);
-        cell2.innerHTML = workout.userID;
-        cell2.classList.add("text-center");
-        var cell3 = rowElement.insertCell(2);
-        cell3.innerHTML = workout.workout_date;
-        cell3.classList.add("text-center");
-        var cell4 = rowElement.insertCell(3);
-        cell4.innerHTML = workout.sessionType;
-        var cell5 = rowElement.insertCell(4);
-        cell5.innerHTML = workout.location;
-        var cell6 = rowElement.insertCell(5);
-        cell6.innerHTML = workout.durationMinutes;
-        cell6.classList.add("text-center");
-        var cell7 = rowElement.insertCell(6);
-        cell7.innerHTML = workout.difficulty;
-        var cell8 = rowElement.insertCell(7);
-        cell8.innerHTML = workout.rating;
-        cell8.classList.add("text-center");
-        var cell9 = rowElement.insertCell(8);
-        cell9.innerHTML = '<button class="btn btn-warning btn-sm" onclick="showUpdate(this)">Update</button>';
-        cell9.classList.add("text-center");
-        var cell10 = rowElement.insertCell(9);
-        cell10.innerHTML = '<button class="btn btn-danger btn-sm" onclick="doDelete(this)">Delete</button>';
-        cell10.classList.add("text-center");
-
-    }
-
-    function clearForm(){
-        var form = document.getElementById('createUpdateForm')
-
-        form.querySelector('input[name="userID"]').value=''
-        form.querySelector('input[name="workout_date"]').value = '';
-        form.querySelector('input[name="sessionType"]').value=''
-        form.querySelector('input[name="location"]').value=''
-        form.querySelector('input[name="durationMinutes"]').value=''
-        form.querySelector('input[name="difficulty"]').value=''
-        form.querySelector('input[name="rating"]').value=''
-    }
-
-    function cancelEdit() {
-        clearForm();
-        showViewAll(); // hides the form and shows the table again
-        document.getElementById('createLabel').style.display = "inline";
-        document.getElementById('updateLabel').style.display = "none";
-        document.getElementById('doCreateButton').style.display = "block";
-        document.getElementById('updateButtons').style.display = "none";
-    }
-
-
-    function getWorkoutFromRow(rowElement){
-        var workout ={}
-        workout.workoutID = rowElement.getAttribute("id")
-        workout.userID = rowElement.cells[1].firstChild.textContent
-        workout.workout_date = rowElement.cells[2].firstChild.textContent
-
-        workout.sessionType = rowElement.cells[3].firstChild.textContent
-        workout.location = rowElement.cells[4].firstChild.textContent
-        workout.durationMinutes = rowElement.cells[5].firstChild.textContent
-        workout.difficulty = rowElement.cells[6].firstChild.textContent
-        workout.rating = parseFloat(rowElement.cells[7].firstChild.textContent)
-
-        return workout
-    }
-    function setWorkoutInRow(rowElement, workout)
-    {
-        rowElement.cells[0].firstChild.textContent= workout.workoutID  
-        rowElement.cells[1].firstChild.textContent= workout.userID 
-        rowElement.cells[2].firstChild.textContent = workout.workout_date;
-        rowElement.cells[3].firstChild.textContent= workout.sessionType
-        rowElement.cells[4].firstChild.textContent= workout.location
-        rowElement.cells[5].firstChild.textContent= workout.durationMinutes  
-        rowElement.cells[6].firstChild.textContent= workout.difficulty
-        rowElement.cells[7].firstChild.textContent= workout.rating
-    }
-    function populateFormWithWorkout(workout){
-        var form = document.getElementById('createUpdateForm')
-        form.querySelector('input[name="workoutID"]').disabled = true
-
-        form.querySelector('input[name="workoutID"]').value  = workout.workoutID  
-        form.querySelector('input[name="workout_date"]').value = workout.workout_date;
-        form.querySelector('input[name="userID"]').value= workout.userID 
-        form.querySelector('input[name="sessionType"]').value= workout.sessionType
-        form.querySelector('input[name="location"]').value= workout.location
-        form.querySelector('input[name="durationMinutes"]').value  = workout.durationMinutes  
-        form.querySelector('input[name="difficulty"]').value= workout.difficulty
-        form.querySelector('input[name="rating"]').value= workout.rating
-
-        return workout
-    }
-    function getWorkoutFromForm(){
-        var form = document.getElementById('createUpdateForm')
-        var workout = {}
-        workout.workoutID = form.querySelector('input[name="workoutID"]').value
-        workout.workout_date = form.querySelector('input[name="workout_date"]').value;
-        workout.userID = form.querySelector('input[name="userID"]').value
-        workout.sessionType = form.querySelector('input[name="sessionType"]').value
-        workout.location = form.querySelector('input[name="location"]').value
-        workout.durationMinutes = parseInt(form.querySelector('input[name="durationMinutes"]').value,10)
-        workout.difficulty = form.querySelector('input[name="difficulty"]').value  
-        workout.rating = parseInt(form.querySelector('input[name="rating"]').value,10)
+            document.getElementById('createLabel').style.display="inline"
+            document.getElementById('updateLabel').style.display="none"
         
-        console.log(JSON.stringify(workout))
-        return workout
-    }
-
-    function getAllAjax(){
-        $.ajax({
-            "url": "/api/workouts",
-            "method":"GET",
-            "data":"",
-            "dataType": "JSON",
-            "success":function(result){
-                for (workout of result){
-                    addWorkoutToTable(workout);
+            document.getElementById('doCreateButton').style.display="block"
+            document.getElementById('updateButtons').style.display="none"
+        
+        }
+        function showViewAll(){
+            document.getElementById('showCreateButton').style.display="block"
+            document.getElementById('workoutTable').style.display="table"
+            document.getElementById('createUpdateForm').style.display="none"
+        }
+        function showUpdate(buttonElement){
+            document.getElementById('showCreateButton').style.display="none"
+            document.getElementById('workoutTable').style.display="table"
+            document.getElementById('createUpdateForm').style.display="block"
+        
+            document.getElementById('createLabel').style.display="none"
+            document.getElementById('updateLabel').style.display="inline"
+        
+            document.getElementById('doCreateButton').style.display="none"
+            document.getElementById('updateButtons').style.display="flex"
+        
+        
+            var rowElement = buttonElement.parentNode.parentNode
+            // these is a way of finding the closest <tr> which would safer, closest()
+            
+            var workout = getWorkoutFromRow(rowElement)
+            populateFormWithWorkout(workout)
+        }
+        function doCreateWorkout(){
+            var form = document.getElementById('createUpdateForm')
+        
+            var workout = {}
+        
+            workout.userID = form.querySelector('input[name="userID"]').value
+            workout.sessionType = form.querySelector('input[name="sessionType"]').value
+            workout.location = form.querySelector('input[name="location"]').value
+            workout.durationMinutes = form.querySelector('input[name="durationMinutes"]').value
+            workout.difficulty = form.querySelector('input[name="difficulty"]').value
+            workout.rating = form.querySelector('input[name="rating"]').value
+        
+            console.log(JSON.stringify(workout))
+            createWorkoutsAjax(workout)
+        
+        }
+        function doUpdateWorkout(){
+            var workout = getWorkoutFromForm();
+            var rowElement = document.getElementById(workout.workoutID);
+            updateWorkoutAjax(workout);
+            setWorkoutInRow(rowElement,workout);
+        
+            clearForm();
+            showViewAll();
+        }
+        function doDelete(r){
+            var tableElement = document.getElementById('workoutTable');
+            var rowElement = r.parentNode.parentNode;
+            var index = rowElement.rowIndex;
+            deleteWorkoutAjax(rowElement.getAttribute("id"));
+            tableElement.deleteRow(index);
+        }
+        function addWorkoutToTable(workout){
+            var tableElement = document.getElementById('workoutTable').getElementsByTagName('tbody')[0];
+            var rowElement = tableElement.insertRow(-1);
+            rowElement.setAttribute("id", workout.workoutID);
+            var cell1 = rowElement.insertCell(0);
+            cell1.innerHTML = workout.workoutID;
+            cell1.classList.add("text-center");
+            var cell2 = rowElement.insertCell(1);
+            cell2.innerHTML = workout.userID;
+            cell2.classList.add("text-center");
+            var cell3 = rowElement.insertCell(2);
+            cell3.innerHTML = workout.workout_date;
+            cell3.classList.add("text-center");
+            var cell4 = rowElement.insertCell(3);
+            cell4.innerHTML = workout.sessionType;
+            var cell5 = rowElement.insertCell(4);
+            cell5.innerHTML = workout.location;
+            var cell6 = rowElement.insertCell(5);
+            cell6.innerHTML = workout.durationMinutes;
+            cell6.classList.add("text-center");
+            var cell7 = rowElement.insertCell(6);
+            cell7.innerHTML = workout.difficulty;
+            var cell8 = rowElement.insertCell(7);
+            cell8.innerHTML = workout.rating;
+            cell8.classList.add("text-center");
+            var cell9 = rowElement.insertCell(8);
+            cell9.innerHTML = '<button class="btn btn-warning btn-sm" onclick="showUpdate(this)">Update</button>';
+            cell9.classList.add("text-center");
+            var cell10 = rowElement.insertCell(9);
+            cell10.innerHTML = '<button class="btn btn-danger btn-sm" onclick="doDelete(this)">Delete</button>';
+            cell10.classList.add("text-center");
+        
+        }
+    
+        function clearForm(){
+            var form = document.getElementById('createUpdateForm')
+        
+            form.querySelector('input[name="userID"]').value=''
+            form.querySelector('input[name="workout_date"]').value = '';
+            form.querySelector('input[name="sessionType"]').value=''
+            form.querySelector('input[name="location"]').value=''
+            form.querySelector('input[name="durationMinutes"]').value=''
+            form.querySelector('input[name="difficulty"]').value=''
+            form.querySelector('input[name="rating"]').value=''
+        }
+    
+        function cancelEdit() {
+            clearForm();
+            showViewAll(); // hides the form and shows the table again
+            document.getElementById('createLabel').style.display = "inline";
+            document.getElementById('updateLabel').style.display = "none";
+            document.getElementById('doCreateButton').style.display = "block";
+            document.getElementById('updateButtons').style.display = "none";
+        }
+    
+    
+        function getWorkoutFromRow(rowElement){
+            var workout ={}
+            workout.workoutID = rowElement.getAttribute("id")
+            workout.userID = rowElement.cells[1].firstChild.textContent
+            workout.workout_date = rowElement.cells[2].firstChild.textContent
+        
+            workout.sessionType = rowElement.cells[3].firstChild.textContent
+            workout.location = rowElement.cells[4].firstChild.textContent
+            workout.durationMinutes = rowElement.cells[5].firstChild.textContent
+            workout.difficulty = rowElement.cells[6].firstChild.textContent
+            workout.rating = parseFloat(rowElement.cells[7].firstChild.textContent)
+        
+            return workout
+        }
+        function setWorkoutInRow(rowElement, workout)
+        {
+            rowElement.cells[0].firstChild.textContent= workout.workoutID  
+            rowElement.cells[1].firstChild.textContent= workout.userID 
+            rowElement.cells[2].firstChild.textContent = workout.workout_date;
+            rowElement.cells[3].firstChild.textContent= workout.sessionType
+            rowElement.cells[4].firstChild.textContent= workout.location
+            rowElement.cells[5].firstChild.textContent= workout.durationMinutes  
+            rowElement.cells[6].firstChild.textContent= workout.difficulty
+            rowElement.cells[7].firstChild.textContent= workout.rating
+        }
+        function populateFormWithWorkout(workout){
+            var form = document.getElementById('createUpdateForm')
+            form.querySelector('input[name="workoutID"]').disabled = true
+        
+            form.querySelector('input[name="workoutID"]').value  = workout.workoutID  
+            form.querySelector('input[name="workout_date"]').value = workout.workout_date;
+            form.querySelector('input[name="userID"]').value= workout.userID 
+            form.querySelector('input[name="sessionType"]').value= workout.sessionType
+            form.querySelector('input[name="location"]').value= workout.location
+            form.querySelector('input[name="durationMinutes"]').value  = workout.durationMinutes  
+            form.querySelector('input[name="difficulty"]').value= workout.difficulty
+            form.querySelector('input[name="rating"]').value= workout.rating
+        
+            return workout
+        }
+        function getWorkoutFromForm(){
+            var form = document.getElementById('createUpdateForm')
+            var workout = {}
+            workout.workoutID = form.querySelector('input[name="workoutID"]').value
+            workout.workout_date = form.querySelector('input[name="workout_date"]').value;
+            workout.userID = form.querySelector('input[name="userID"]').value
+            workout.sessionType = form.querySelector('input[name="sessionType"]').value
+            workout.location = form.querySelector('input[name="location"]').value
+            workout.durationMinutes = parseInt(form.querySelector('input[name="durationMinutes"]').value,10)
+            workout.difficulty = form.querySelector('input[name="difficulty"]').value  
+            workout.rating = parseInt(form.querySelector('input[name="rating"]').value,10)
+            
+            console.log(JSON.stringify(workout))
+            return workout
+        }
+    
+        function getAllAjax(){
+            $.ajax({
+                "url": "/api/workouts",
+                "method":"GET",
+                "data":"",
+                "dataType": "JSON",
+                "success":function(result){
+                    for (workout of result){
+                        addWorkoutToTable(workout);
+                    }
+                    
+                },
+                "error":function(xhr,status,error){
+                    console.log("error: "+status+" msg:"+error);
                 }
-                
-            },
-            "error":function(xhr,status,error){
-                console.log("error: "+status+" msg:"+error);
+            });
+        
+        }
+        function createWorkoutsAjax(workout){
+            console.log(JSON.stringify(workout));
+            $.ajax({
+                "url": "/api/workouts",
+                "method":"POST",
+                "data":JSON.stringify(workout),
+                "dataType": "JSON",
+                contentType: "application/json; charset=utf-8",
+                "success":function(result){
+                    workout.workoutID = result.workoutID
+                    addWorkoutToTable(workout)
+                    clearForm()
+                    showViewAll()
+                },
+                "error":function(xhr,status,error){
+                    console.log("error: "+status+" msg:"+error);
+                }
+            });
+        }
+        function updateWorkoutAjax(workout){
+            console.log(JSON.stringify(workout));
+            $.ajax({
+                "url": "/api/workouts/"+encodeURI(workout.workoutID),
+                "method":"PUT",
+                "data":JSON.stringify(workout),
+                "dataType": "JSON",
+                contentType: "application/json; charset=utf-8",
+                "success":function(result){
+                },
+                "error":function(xhr,status,error){
+                    console.log("error: "+status+" msg:"+error);
+                }
+            });
+        }
+        function deleteWorkoutAjax(workoutID){
+            $.ajax({
+                "url": "/api/workouts/"+encodeURI(workoutID),
+                "method":"DELETE",
+                "data":"",
+                "dataType": "JSON",
+                contentType: "application/json; charset=utf-8",
+                "success":function(result){
+                },
+                "error":function(xhr,status,error){
+                    console.log("error: "+status+" msg:"+error);
+                }
+            });
+        }
+        function filterByUser() {
+            const input = document.getElementById("userFilter").value.trim();
+            const warningInvalid = document.getElementById("userFilterWarning");
+            const warningNotFound = document.getElementById("userNotFoundWarning");
+            const table = document.getElementById("workoutTable");
+            const rows = table.getElementsByTagName("tr");
+        
+            warningInvalid.style.display = "none";
+            warningNotFound.style.display = "none";
+        
+            if (input !== "" && !/^\d+$/.test(input)) {
+                warningInvalid.style.display = "block";
+                for (let i = 1; i < rows.length; i++) {
+                    rows[i].style.display = "none";
+                }
+                return;
             }
-        });
-
-    }
-    function createWorkoutsAjax(workout){
-        console.log(JSON.stringify(workout));
-        $.ajax({
-            "url": "/api/workouts",
-            "method":"POST",
-            "data":JSON.stringify(workout),
-            "dataType": "JSON",
-            contentType: "application/json; charset=utf-8",
-            "success":function(result){
-                workout.workoutID = result.workoutID
-                addWorkoutToTable(workout)
-                clearForm()
-                showViewAll()
-            },
-            "error":function(xhr,status,error){
-                console.log("error: "+status+" msg:"+error);
-            }
-        });
-    }
-    function updateWorkoutAjax(workout){
-        console.log(JSON.stringify(workout));
-        $.ajax({
-            "url": "/api/workouts/"+encodeURI(workout.workoutID),
-            "method":"PUT",
-            "data":JSON.stringify(workout),
-            "dataType": "JSON",
-            contentType: "application/json; charset=utf-8",
-            "success":function(result){
-            },
-            "error":function(xhr,status,error){
-                console.log("error: "+status+" msg:"+error);
-            }
-        });
-    }
-    function deleteWorkoutAjax(workoutID){
-        $.ajax({
-            "url": "/api/workouts/"+encodeURI(workoutID),
-            "method":"DELETE",
-            "data":"",
-            "dataType": "JSON",
-            contentType: "application/json; charset=utf-8",
-            "success":function(result){
-            },
-            "error":function(xhr,status,error){
-                console.log("error: "+status+" msg:"+error);
-            }
-        });
-    }
-    function filterByUser() {
-        const input = document.getElementById("userFilter").value.trim();
-        const warningInvalid = document.getElementById("userFilterWarning");
-        const warningNotFound = document.getElementById("userNotFoundWarning");
-        const table = document.getElementById("workoutTable");
-        const rows = table.getElementsByTagName("tr");
-
-        warningInvalid.style.display = "none";
-        warningNotFound.style.display = "none";
-
-        if (input !== "" && !/^\d+$/.test(input)) {
-            warningInvalid.style.display = "block";
+        
+            let foundMatch = false;
             for (let i = 1; i < rows.length; i++) {
-                rows[i].style.display = "none";
+                const userCell = rows[i].getElementsByTagName("td")[1];
+                if (userCell) {
+                    const txtValue = userCell.textContent || userCell.innerText;
+                    const showRow = (input === "" || txtValue.trim() === input);
+                    rows[i].style.display = showRow ? "" : "none";
+                    if (showRow) foundMatch = true;
+                }
             }
-            return;
-        }
-
-        let foundMatch = false;
-        for (let i = 1; i < rows.length; i++) {
-            const userCell = rows[i].getElementsByTagName("td")[1];
-            if (userCell) {
-                const txtValue = userCell.textContent || userCell.innerText;
-                const showRow = (input === "" || txtValue.trim() === input);
-                rows[i].style.display = showRow ? "" : "none";
-                if (showRow) foundMatch = true;
+        
+            if (input !== "" && !foundMatch) {
+                warningNotFound.style.display = "block";
             }
         }
-
-        if (input !== "" && !foundMatch) {
-            warningNotFound.style.display = "block";
-        }
-    }
-
-
-    getAllAjax();    
+    
+    
+        getAllAjax();    
     </script>
+</body>
 </html>

@@ -44,7 +44,6 @@ class WorkoutsDAO:
         for result in results:
             #print(result)
             returnArray.append(self.convertToDictionary(result))
-        
         self.closeAll()
         return returnArray
 
@@ -52,7 +51,6 @@ class WorkoutsDAO:
         cursor = self.getcursor()
         sql="select * from workouts where workoutID = %s"
         values = (workoutID,)
-
         cursor.execute(sql, values)
         result = cursor.fetchone()
         returnvalue = self.convertToDictionary(result)
@@ -61,7 +59,11 @@ class WorkoutsDAO:
 
     def createWorkout(self, workout):
         cursor = self.getcursor()
-        sql="INSERT INTO workouts (workout_date, userID, sessionType, location, durationMinutes, difficulty, rating) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+        sql="""
+            INSERT INTO workouts 
+            (workout_date, userID, sessionType, location, durationMinutes, difficulty, rating) 
+            VALUES (%s,%s,%s,%s,%s,%s,%s)
+        """
         values = (
             workout.get("workout_date"),
             workout.get("userID"),
@@ -72,7 +74,6 @@ class WorkoutsDAO:
             workout.get("rating")
         )
         cursor.execute(sql, values)
-
         self.connection.commit()
         newid = cursor.lastrowid
         workout["workoutID"] = newid
@@ -82,7 +83,12 @@ class WorkoutsDAO:
 
     def updateWorkout(self, workoutID, workout):
         cursor = self.getcursor()
-        sql = "UPDATE workouts SET workout_date=%s, userID=%s, sessionType=%s, location=%s, durationMinutes=%s,difficulty=%s, rating=%s WHERE workoutID = %s"
+        sql = """
+            UPDATE workouts 
+            SET workout_date=%s, userID=%s, sessionType=%s, location=%s, 
+                durationMinutes=%s,difficulty=%s, rating=%s 
+            WHERE workoutID = %s
+        """
         print(f"update users {workout}")
         values = (
             workout.get("workout_date"),
@@ -102,12 +108,9 @@ class WorkoutsDAO:
         cursor = self.getcursor()
         sql="delete from workouts where workoutID = %s"
         values = (workoutID,)
-
         cursor.execute(sql, values)
-
         self.connection.commit()
         self.closeAll()
-        
         print("delete done")
 
     def convertToDictionary(self, resultLine):
@@ -123,7 +126,7 @@ class WorkoutsDAO:
 
     def get_dashboard_stats(self):
         cursor = self.getcursor(dictionary=True)
-
+        
         # Get summary stats
         sql_summary = """
             SELECT 

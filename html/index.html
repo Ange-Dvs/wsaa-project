@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>Workout Info</title>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <title>Workout Info</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
 <body class="bg-light">
     <div class="container text-center mt-5">
         <h1 class="mb-4 text-primary">💪 Workout Info</h1>
@@ -17,96 +17,95 @@
             <a href="/weight-management" class="btn btn-outline-warning btn-lg mt-3">⚖️ Weight Tracker</a>
         </div>
     </div>
+    
     <div class="container mt-5 px-1">
-    <div class="row g-3">
+        <div class="row g-3">
 
-        <!-- Workout Summary -->
-        <div class="col-md-6">
-        <h4 class="text-primary mb-3">📊 Summary of Workouts</h4>
-        <div class="card p-3 h-100">
-            <ul id="dashboardStats" class="mb-0 ps-2 list-unstyled text-start">
-            <li>Total Workouts: <span id="totalWorkouts"></span></li>
-            <li>Avg Duration: <span id="avgDuration"></span> mins</li>
-            <li>Unique Users: <span id="uniqueUsers"></span></li>
-            <li>Top Workout Types:
-                <ol id="topTypes" class="ps-3 mb-0"></ol>
-            </li>
-            </ul>
-        </div>
-        </div>
+            <!-- Workout Summary -->
+            <div class="col-md-6">
+                <h4 class="text-primary mb-3">📊 Summary of Workouts</h4>
+                <div class="card p-3 h-100">
+                    <ul id="dashboardStats" class="mb-0 ps-2 list-unstyled text-start">
+                        <li>Total Workouts: <span id="totalWorkouts"></span></li>
+                        <li>Avg Duration: <span id="avgDuration"></span> mins</li>
+                        <li>Unique Users: <span id="uniqueUsers"></span></li>
+                        <li>Top Workout Types:
+                            <ol id="topTypes" class="ps-3 mb-0"></ol>
+                        </li>
+                    </ul>
+                </div>
+            </div>
 
-        <!-- User Summary -->
-        <div class="col-md-6">
-        <h4 class="text-primary mb-3">👥 Summary of Users</h4>
-        <div class="card p-3 h-100">
-            <ul id="userStats" class="mb-0 ps-2 list-unstyled text-start">
-            <li>Total Users: <span id="totalUsers"></span></li>
-            <li>Avg Age: <span id="avgAge"></span></li>
-            <li>Top Goals:
-                <ol id="topGoals" class="mb-0 ps-3"></ol>
-            </li>
-            </ul>
-        </div>
-        </div>
+            <!-- User Summary -->
+            <div class="col-md-6">
+                <h4 class="text-primary mb-3">👥 Summary of Users</h4>
+                <div class="card p-3 h-100">
+                    <ul id="userStats" class="mb-0 ps-2 list-unstyled text-start">
+                        <li>Total Users: <span id="totalUsers"></span></li>
+                        <li>Avg Age: <span id="avgAge"></span></li>
+                        <li>Top Goals:
+                            <ol id="topGoals" class="mb-0 ps-3"></ol>
+                        </li>
+                    </ul>
+                </div>
+            </div>
 
+        </div>
     </div>
-    </div>
 
-  <script>
-    function fetchDashboardData() {
-        $.ajax({
-            url: "/api/dashboard-data",
-            method: "GET",
-            dataType: "json",
-            success: function(data) {
-                document.getElementById("totalWorkouts").innerText = data.total_workouts;
-                document.getElementById("avgDuration").innerText = data.avg_duration;
-                document.getElementById("topTypes").innerText = data.most_common_type;
-                document.getElementById("uniqueUsers").innerText = data.unique_users;
+    <script>
+        function fetchDashboardData() {
+            $.ajax({
+                url: "/api/dashboard-data",
+                method: "GET",
+                dataType: "json",
+                success: function(data) {
+                    document.getElementById("totalWorkouts").innerText = data.total_workouts;
+                    document.getElementById("avgDuration").innerText = data.avg_duration;
+                    document.getElementById("topTypes").innerText = data.most_common_type;
+                    document.getElementById("uniqueUsers").innerText = data.unique_users;
 
-                const topTypesList = document.getElementById("topTypes");
-                topTypesList.innerHTML = "";
-                data.top_session_types.forEach(function(type) {
-                    const li = document.createElement("li");
-                    li.textContent = type;
-                    topTypesList.appendChild(li);
-                });
-            },
-            error: function(xhr, status, error) {
-                console.error("AJAX error (dashboard-data):", status, error);
-            }
+                    const topTypesList = document.getElementById("topTypes");
+                    topTypesList.innerHTML = "";
+                    data.top_session_types.forEach(function(type) {
+                        const li = document.createElement("li");
+                        li.textContent = type;
+                        topTypesList.appendChild(li);
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error("AJAX error (dashboard-data):", status, error);
+                }
+            });
+        }
+
+        function fetchUserSummary() {
+            $.ajax({
+                url: "/api/user-summary",
+                method: "GET",
+                dataType: "json",
+                success: function(data) {
+                    document.getElementById("totalUsers").innerText = data.total_users;
+                    document.getElementById("avgAge").innerText = data.avg_age;
+
+                    const goalList = document.getElementById("topGoals");
+                    goalList.innerHTML = "";
+                    data.top_goals.forEach(function(goal) {
+                        const li = document.createElement("li");
+                        li.textContent = goal;
+                        goalList.appendChild(li);
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error("AJAX error (user-summary):", status, error);
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            fetchDashboardData();
+            fetchUserSummary();
         });
-    }
-
-    function fetchUserSummary() {
-        $.ajax({
-            url: "/api/user-summary",
-            method: "GET",
-            dataType: "json",
-            success: function(data) {
-                document.getElementById("totalUsers").innerText = data.total_users;
-                document.getElementById("avgAge").innerText = data.avg_age;
-
-                const goalList = document.getElementById("topGoals");
-                goalList.innerHTML = "";
-                data.top_goals.forEach(function(goal) {
-                    const li = document.createElement("li");
-                    li.textContent = goal;
-                    goalList.appendChild(li);
-                });
-            },
-            error: function(xhr, status, error) {
-                console.error("AJAX error (user-summary):", status, error);
-            }
-        });
-    }
-
-    $(document).ready(function () {
-        fetchDashboardData();
-        fetchUserSummary();
-    });
-  </script>
-
-
+    </script>
 </body>
 </html>

@@ -89,7 +89,7 @@ The ``closeAll()`` method is used to close the cursor after the SQL query is exe
 #### ``index.html``
 The ``index.html`` page is used as the homepage offering different routes to navigate to and a view of some summary statistics.
 
-<u>Features<u>  
+<u>Features</u>  
 
 Navigation:
 - User Management
@@ -132,7 +132,7 @@ There is also the possibility to filter the workouts by a particular user ID.
 - Filter logs by user
 - Display session types, location, duration, difficulty, and rating
 
-<u>Backend Endpoints Used<\u>
+<u>Backend Endpoints Used </u>
 
 - `GET /api/workouts`
 - `POST /api/workouts`
@@ -150,7 +150,7 @@ The ``weightviewer.html`` page allows the changes in a users weight over time to
 - Update or delete existing entries
 - Sortable table display
 
-<u>>Backend Endpoints Used</u>
+<u>Backend Endpoints Used</u>
 
 - `GET /api/weights`
 - `POST /api/weights`
@@ -163,18 +163,22 @@ The ``weightviewer.html`` page allows the changes in a users weight over time to
 - Flask backend API
 
 ### Current limitations & Area's for improvement
-While this use case is selected for demonstration purposes for the project, it is important to acknowledge some limitations that would need to be addressed before this could be utilized with real data: 
+While this use case is selected for demonstration purposes for the project, it is important to acknowledge some limitations that would need to be addressed before this could be utilized with real data.
 
-- User Authentication: 
+- **User Authentication**:  
 Current any user logged in can perform CRUD operations on the tables. There is no distinction between a regular user and admins. 
-If this was to be used by an array of users i.e. personal trainers and clients, it would be better to have different roles and access to tables based on the logged in user. The metrics and details on the homepage could also be tailored to suit the user vs client experience and needs. 
+If this was to be used by an array of users i.e. personal trainers and clients, it would be better to have different roles and access to tables based on the logged in user.
 
-- Data privacy & GDPR:
+- **Data privacy & GDPR**:  
 Personally Identifiable Information like User IDs, workout logs and sensitive fitness goals are openly handled and available with the current set up. While enhanced user restrictions would improve this, there would like need to be a data retention policy with the information accessible to the user. 
 If any information did qualify as PII the necessary actions would need to be taken to ensure that the usage is compliant with GDPR laws. 
 
-- Metrics: 
-Currently the landing page is showing general metrics across all users for the users and workouts table. 
+- **Metrics**:  
+Currently the landing page is showing general metrics across all users for the users and workouts table. If user based authentication and access was introduced the metrics displayed the metrics could be enhanced so that a personal trainer could see the overall system view and client only seeing metrics relevant for their user ID, using the dates entered for weights it would be possible to track a users weight overtime to visualise the data.
+
+- **Accessibility**:  
+Certain aspects of the HTML files would need to be enhanced from an accessibility perspective. Currently navigation works using mouse and keyboard and in Chrome, the native tabbing works for moving throughout the pages. This would help users would could not use a mouse. In terms of users would may rely on a screen reader ARIA labels would be a potential path forward to help with screen reader compatibility.
+
 
 ## Frameworks, Libraries, and Tools Used
 
@@ -185,6 +189,7 @@ Within the assignments various libraries are used including:
 - ``jQuery``
 - ``Bootstrap 4``
 - Built-in/Standard library
+- Pythonanywhere
 
 <font size="4"><b>Flask</b></font>   
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Flask is a lightweight WSGI web application framework used to build the backend REST API for handling requests related to users, workouts, and weight logs. It also serves static HTML pages. Used in `server.py`
@@ -243,47 +248,18 @@ Examples:
 <font size="4"><b>Python Standard Library</b></font>   
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Used throughout the Python files for the project.
 
-The following are methods used throughout the assignments from `LIB1`: 
+The following are methods used throughout the assignments from `Python Standard Library`: 
 
 > ``json `` (Module) - Serializes and deserializes JSON data.[^reference]
 
 > ``datetime`` (Module) - Used to handle or parse dates, particularly for ``workout_date`` and ``logDate`` values within the project to ensure the dates are in the desired format of YYYY-MM-DD.[^reference]
 
-### Template for libraries used 
+<font size="4"><b>Pythonanywhere</b></font>   
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 
-<font size="4"><b>Library Name</b></font>   
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Summary of library and context for project
+This project is hosted on PythonAnywhere, a web-based platform for running Python applications. The Flask backend and serve the HTML pages, making the app publicly accessible for testing and demonstration.
 
-The following are methods used throughout the assignments from `LIB1`: 
-
-> ``.XXXX`` (Function/Method/Module/Class from `XXX` module ) - Summary and how used.[^reference]
-
-> ``.XXXX`` (Function/Method/Module/Class from `XXX` module ) - Summary and how used.[^reference]
-
-> ``.XXXX`` (Function/Method/Module/Class from `XXX` module ) - Summary and how used.[^reference]
-
-> ``.XXXX`` (Function/Method/Module/Class from `XXX` module ) - Summary and how used.[^reference]
-
-> ``.XXXX`` (Function/Method/Module/Class from `XXX` module ) - Summary and how used.[^reference]
-
-> ``.XXXX`` (Function/Method/Module/Class from `XXX` module ) - Summary and how used.[^reference]
-
-> ``.XXXX`` (Function/Method/Module/Class from `XXX` module ) - Summary and how used.[^reference]
-
-> ``.XXXX`` (Function/Method/Module/Class from `XXX` module ) - Summary and how used.[^reference]
-
-> ``.XXXX`` (Function/Method/Module/Class from `XXX` module ) - Summary and how used.[^reference]
-
-> ``.XXXX`` (Function/Method/Module/Class from `XXX` module ) - Summary and how used.[^reference]
-
-> ``.XXXX`` (Function/Method/Module/Class from `XXX` module ) - Summary and how used.[^reference]
-
-> ``.XXXX`` (Function/Method/Module/Class from `XXX` module ) - Summary and how used.[^reference]
-
-> ``.XXXX`` (Function/Method/Module/Class from `XXX` module ) - Summary and how used.[^reference]
-
-> ``.XXXX`` (Function/Method/Module/Class from `XXX` module ) - Summary and how used.[^reference]
-
+URL: https://adproject.pythonanywhere.com/
 
 ***
 End 

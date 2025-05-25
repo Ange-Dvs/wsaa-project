@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request, abort, send_from_directory
 from flask_cors import CORS, cross_origin
 
-app = Flask(__name__, static_url_path='', static_folder='.')
+app = Flask(__name__)
 cors = CORS(app) # allow CORS for all domains on all routes.
 app.config['CORS_HEADERS'] = 'Content-Type'
 
@@ -30,6 +30,7 @@ def weight_view():
     return send_from_directory('html', 'weightviewer.html')
 
 # Calls for getting information for users
+
 @app.route('/api/users')
 @cross_origin()
 def getAllUsers():
@@ -107,7 +108,9 @@ def delete(userID):
         print("Error deleting user:", e)
         return jsonify({"error": str(e)}), 500
 
+
 # Calls for getting information for workouts 
+
 @app.route('/api/workouts', methods=['GET'])
 @cross_origin()
 def getAllWorkouts():
@@ -169,6 +172,7 @@ def deleteWorkout(workoutID):
         return jsonify({"error": str(e)}), 500
 
 # Calls for getting information for weight-management
+
 @app.route('/api/weight-management', methods=['GET'])
 @cross_origin()
 def getWeightLogs():
@@ -194,6 +198,7 @@ def updateWeightLog(id):
     return jsonify({"message": f"Weight entry {id} updated"})
 
 # Calls for getting information for summary data on homepage
+
 @app.route("/api/dashboard-data", methods=["GET"])
 def dashboard_data():
     cursor = workoutsDAO.getcursor()  
@@ -207,7 +212,6 @@ def dashboard_data():
 def user_summary():
     stats = usersDAO.get_user_stats()
     return jsonify(stats)
-
 
 if __name__ == '__main__' :
     app.run(debug= True)
